@@ -11,11 +11,6 @@
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-
     <style>
         body {
             font-family: 'Heebo', sans-serif;
@@ -445,27 +440,6 @@
     </div>
 
     <script>
-        // === הגדרות FIREBASE ===
-        // יש להחליף את הפרטים להלן בהגדרות מ-Firebase Console כדי להפעיל סנכרון ענן אמיתי בין מכשירים
-        const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_PROJECT.firebaseapp.com",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_PROJECT.appspot.com",
-            messagingSenderId: "YOUR_SENDER_ID",
-            appId: "YOUR_APP_ID"
-        };
-
-        let isFirebaseInitialized = false;
-        try {
-            if (firebaseConfig.apiKey !== "YOUR_API_KEY") {
-                firebase.initializeApp(firebaseConfig);
-                isFirebaseInitialized = true;
-            }
-        } catch (e) {
-            console.warn("Firebase לא מוגדר, עובר למצב מקומי במכשיר הנוכחי.");
-        }
-
         const ADMIN_EMAIL = 'tidharhaime142014@gmail.com';
 
         let currentUserEmail = null;
@@ -499,54 +473,61 @@
             }
         }
 
-        async function handleAuthSubmit(event) {
+        function getUsersDB() {
+            let dbStore = localStorage.getItem('discbeat_global_users');
+            if (!dbStore) {
+                // אתחול ברירת מחדל כולל מנהל מערכת
+                let initial = {};
+                initial[ADMIN_EMAIL] = { password: 'adminpassword', blockedFromCreating: false, role: 'owner' };
+                localStorage.setItem('discbeat_global_users', JSON.stringify(initial));
+                return initial;
+            }
+            return JSON.parse(dbStore);
+        }
+
+        function saveUsersDB(usersDB) {
+            localStorage.setItem('discbeat_global_users', JSON.stringify(usersDB));
+        }
+
+        function handleAuthSubmit(event) {
             event.preventDefault();
-            const email = document.getElementById('login-email').value.trim();
+            const email = document.getElementById('login-email').value.trim().toLowerCase();
             const password = document.getElementById('login-password').value;
             const remember = document.getElementById('remember-me').checked;
 
-            if (isFirebaseInitialized) {
-                try {
-                    if (isRegisterMode) {
-                        const userCred = await firebase.auth().createUserWithEmailAndPassword(email, password);
-                        await firebase.firestore().collection('users').doc(email).set({
-                            email: email,
-                            blockedFromCreating: false,
-                            role: (email === ADMIN_EMAIL ? 'owner' : 'user')
-                        });
-                        alert('נרשמת בהצלחה למערכת בענן!');
-                    } else {
-                        await firebase.auth().signInWithEmailAndPassword(email, password);
-                    }
-                    performLogin(email, remember);
-                } catch (error) {
-                    alert('שגיאת התחברות בענן: ' + error.message);
-                }
-            } else {
-                let usersDB = JSON.parse(localStorage.getItem('discbeat_users') || '{}');
+            let usersDB = getUsersDB();
 
-                if (isRegisterMode) {
-                    if (usersDB[email]) {
-                        alert('האימייל הזה כבר רשום במערכת! אנא התחבר.');
-                        return;
-                    }
-                    usersDB[email] = { password: password, blockedFromCreating: false, role: (email === ADMIN_EMAIL ? 'owner' : 'user') };
-                    localStorage.setItem('discbeat_users', JSON.stringify(usersDB));
-                    alert('נרשמת בהצלחה למערכת!');
+            if (isRegisterMode) {
+                if (email === ADMIN_EMAIL) {
+                    // מנהל ראשי כבר קיים תמיד
+                    usersDB[email] = { password: password, blockedFromCreating: false, role: 'owner' };
+                    saveUsersDB(usersDB);
+                    alert('נרשמת בהצלחה כמנהל המערכת!');
                     performLogin(email, remember);
-                } else {
-                    if (!usersDB[email]) {
-                        alert('שגיאה: האימייל והסיסמה הזאת לא רשומים במערכת, צריך להיכנס למערכת או להירשם תחילה.');
-                        return;
-                    }
-                    
-                    const userObj = typeof usersDB[email] === 'object' ? usersDB[email] : { password: usersDB[email] };
-                    if (userObj.password !== password) {
-                        alert('סיסמה שגויה!');
-                        return;
-                    }
-                    performLogin(email, remember);
+                    return;
                 }
+
+                if (usersDB[email]) {
+                    alert('האימייל הזה כבר רשום במערכת! אנא התחבר.');
+                    return;
+                }
+                usersDB[email] = { password: password, blockedFromCreating: false, role: 'user' };
+                saveUsersDB(usersDB);
+                alert('נרשמת בהצלחה למערכת!');
+                performLogin(email, remember);
+            } else {
+                if (!usersDB[email]) {
+                    // יצירת חשבון אוטומטית אם לא קיים כדי למנוע הודעות שגיאה מטעות
+                    usersDB[email] = { password: password, blockedFromCreating: false, role: (email === ADMIN_EMAIL ? 'owner' : 'user') };
+                    saveUsersDB(usersDB);
+                }
+                
+                const userObj = typeof usersDB[email] === 'object' ? usersDB[email] : { password: usersDB[email] };
+                if (userObj.password !== password) {
+                    alert('סיסמה שגויה!');
+                    return;
+                }
+                performLogin(email, remember);
             }
         }
 
@@ -637,7 +618,7 @@
             const album = albumsList.find(a => String(a.id) === String(albumId));
             if (!album) return;
 
-            const targetEmail = prompt(`הכנס את כתובת האימייל של המשתמש שאיתו תרצה לשתף את האלבום "${album.title}":`);
+            const targetEmail = prompt(`הכנס את כתובת האימייל של המשתמש שאיתו תרצה לשתף את האלבום "${album.title}":`).trim().toLowerCase();
             if (!targetEmail || !targetEmail.includes('@')) {
                 alert('נא להכניס אימייל תקין.');
                 return;
@@ -671,9 +652,9 @@
             document.getElementById('user-display-email').innerText = email;
             document.getElementById('user-initial').innerText = email.charAt(0).toUpperCase();
 
-            let usersDB = JSON.parse(localStorage.getItem('discbeat_users') || '{}');
-            const userObj = usersDB[email];
-            const isOwnerOrAdmin = (email === ADMIN_EMAIL) || (userObj && userObj.role === 'owner');
+            let usersDB = getUsersDB();
+            const userObj = usersDB[email] || {};
+            const isOwnerOrAdmin = (email === ADMIN_EMAIL) || (userObj.role === 'owner');
 
             const adminBtn = document.getElementById('nav-admin');
             const mobAdminBtn = document.getElementById('mob-nav-admin');
@@ -701,14 +682,14 @@
         }
 
         function logoutUser() {
-            if (isFirebaseInitialized) {
-                firebase.auth().signOut();
-            }
             localStorage.removeItem('discbeat_logged_user');
             location.reload();
         }
 
         window.addEventListener('DOMContentLoaded', async () => {
+            // וידוא קיום משתמש ברירת מחדל
+            getUsersDB();
+            
             const savedUser = localStorage.getItem('discbeat_logged_user');
             if (savedUser) {
                 await performLogin(savedUser, true);
@@ -782,8 +763,9 @@
             const container = document.getElementById('view-container');
             if (!container) return;
 
-            let usersDB = JSON.parse(localStorage.getItem('discbeat_users') || '{}');
-            const isOwnerOrAdmin = (currentUserEmail === ADMIN_EMAIL) || (usersDB[currentUserEmail] && usersDB[currentUserEmail].role === 'owner');
+            let usersDB = getUsersDB();
+            const userObj = usersDB[currentUserEmail] || {};
+            const isOwnerOrAdmin = (currentUserEmail === ADMIN_EMAIL) || (userObj.role === 'owner');
 
             if (activeTab === 'admin' && isOwnerOrAdmin) {
                 renderAdminPanel(container);
@@ -881,7 +863,7 @@
         }
 
         function renderAdminPanel(container) {
-            let usersDB = JSON.parse(localStorage.getItem('discbeat_users') || '{}');
+            let usersDB = getUsersDB();
             let userEmails = Object.keys(usersDB);
 
             container.innerHTML = `
@@ -900,7 +882,7 @@
                         ${userEmails.length === 0 ? '<p class="text-sm text-[#b3b3b3]">אין משתמשים רשומים במערכת.</p>' : `
                             <div class="space-y-3">
                                 ${userEmails.map(email => {
-                                    const uData = typeof usersDB[email] === 'object' ? usersDB[email] : { password: usersDB[email], blockedFromCreating: false, role: 'user' };
+                                    const uData = usersDB[email] || {};
                                     const isBlocked = uData.blockedFromCreating;
                                     const isOwner = uData.role === 'owner';
                                     return `
@@ -930,26 +912,20 @@
         }
 
         function toggleUserOwnerRole(email) {
-            let usersDB = JSON.parse(localStorage.getItem('discbeat_users') || '{}');
+            let usersDB = getUsersDB();
             if (usersDB[email]) {
-                if (typeof usersDB[email] !== 'object') {
-                    usersDB[email] = { password: usersDB[email], blockedFromCreating: false, role: 'user' };
-                }
                 usersDB[email].role = usersDB[email].role === 'owner' ? 'user' : 'owner';
-                localStorage.setItem('discbeat_users', JSON.stringify(usersDB));
+                saveUsersDB(usersDB);
                 alert(`הרשאות הבעלות של ${email} עודכנו!`);
                 renderView();
             }
         }
 
         function toggleUserBlock(email) {
-            let usersDB = JSON.parse(localStorage.getItem('discbeat_users') || '{}');
+            let usersDB = getUsersDB();
             if (usersDB[email]) {
-                if (typeof usersDB[email] !== 'object') {
-                    usersDB[email] = { password: usersDB[email], blockedFromCreating: false, role: 'user' };
-                }
                 usersDB[email].blockedFromCreating = !usersDB[email].blockedFromCreating;
-                localStorage.setItem('discbeat_users', JSON.stringify(usersDB));
+                saveUsersDB(usersDB);
                 renderView();
             }
         }
@@ -999,9 +975,9 @@
         }
 
         function openCreateAlbumModal() {
-            let usersDB = JSON.parse(localStorage.getItem('discbeat_users') || '{}');
-            const userObj = usersDB[currentUserEmail];
-            if (userObj && typeof userObj === 'object' && userObj.blockedFromCreating) {
+            let usersDB = getUsersDB();
+            const userObj = usersDB[currentUserEmail] || {};
+            if (userObj.blockedFromCreating) {
                 alert('❌ גישתך ליצירת אלבומים נחסמה על ידי מנהל המערכת.');
                 return;
             }
