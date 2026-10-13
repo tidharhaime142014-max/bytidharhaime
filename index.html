@@ -1,1189 +1,422 @@
 <!DOCTYPE html>
 <html lang="he" dir="rtl" class="h-full bg-[#121212]">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DiscBeat - נגן מוזיקה ואלבומים</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts: Heebo -->
-    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <style>
-        body {
-            font-family: 'Heebo', sans-serif;
-            user-select: none;
-            -webkit-user-select: none;
-            overflow: hidden;
-        }
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: rgba(255, 255, 255, 0.4);
-        }
-        .slider-thumb::-webkit-slider-thumb {
-            appearance: none;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: #ffffff;
-            cursor: pointer;
-            transition: transform 0.1s ease, background-color 0.2s ease;
-        }
-        .slider-thumb::-webkit-slider-thumb:hover {
-            transform: scale(1.3);
-            background: #1db954;
-        }
-        @keyframes scaleIn {
-            from { transform: scale(0.95); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
-        .animate-scaleIn {
-            animation: scaleIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-
-        .login-card {
-            background-color: #181818;
-            padding: 30px;
-            border-radius: 20px;
-            width: 100%;
-            max-width: 400px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
-            border: 1px solid rgba(255,255,255,0.08);
-            display: flex;
-            flex-direction: column;
-            gap: 18px;
-            text-align: center;
-        }
-        .form {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        .flex-column {
-            display: flex;
-            flex-direction: column;
-            text-align: right;
-        }
-        .flex-column label {
-            font-size: 0.85rem;
-            color: #b3b3b3;
-            font-weight: 600;
-            margin-bottom: 4px;
-        }
-        .inputForm {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background: #121212;
-            border: 1px solid #333;
-            border-radius: 10px;
-            padding: 10px 14px;
-            transition: border-color 0.2s;
-        }
-        .inputForm:focus-within {
-            border-color: #1db954;
-        }
-        .inputForm svg {
-            fill: #b3b3b3;
-            flex-shrink: 0;
-        }
-        .inputForm:focus-within svg {
-            fill: #1db954;
-        }
-        .input {
-            background: none;
-            border: none;
-            color: #fff;
-            outline: none;
-            font-size: 0.95rem;
-            width: 100%;
-            font-family: 'Heebo', sans-serif;
-            text-align: right;
-        }
-        .flex-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.85rem;
-            color: #b3b3b3;
-        }
-        .flex-row input[type="radio"] {
-            accent-color: #1db954;
-        }
-        .span {
-            color: #1db954;
-            cursor: pointer;
-            font-weight: 600;
-        }
-        .span:hover {
-            text-decoration: underline;
-        }
-        .button-submit {
-            background-color: #1db954;
-            color: #000;
-            border: none;
-            padding: 12px;
-            border-radius: 30px;
-            font-weight: 800;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: background 0.2s, transform 0.1s;
-            box-shadow: 0 4px 15px rgba(29, 185, 84, 0.3);
-        }
-        .button-submit:hover {
-            background-color: #1ed760;
-            transform: scale(1.02);
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>DiscBeat - נגן מוזיקה ואלבומים</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+body{font-family:'Heebo',sans-serif;user-select:none;-webkit-user-select:none;overflow:hidden}
+::-webkit-scrollbar{width:8px;height:8px}::-webkit-scrollbar-thumb{background:rgba(255,255,255,.2);border-radius:4px}
+.slider-thumb::-webkit-slider-thumb{appearance:none;width:12px;height:12px;border-radius:50%;background:#fff;cursor:pointer}
+@keyframes scaleIn{from{transform:scale(.95);opacity:0}to{transform:scale(1);opacity:1}}
+.animate-scaleIn{animation:scaleIn .2s ease forwards}
+.inp{width:100%;padding:12px 14px;background:#121212;border:1px solid #333;border-radius:10px;color:#fff;outline:none;font-family:inherit;font-size:.95rem}
+.inp:focus{border-color:#1db954}
+</style>
 </head>
 <body class="h-full text-white flex flex-col bg-[#121212]">
 
-    <!-- מסך התחברות / הרשמה -->
-    <div id="login-screen" class="fixed inset-0 z-50 bg-[#121212] flex items-center justify-center p-4">
-        <div class="login-card animate-scaleIn">
-            <div class="flex items-center justify-center gap-2.5 mb-1">
-                <div class="w-10 h-10 rounded-full bg-[#1db954] flex items-center justify-center text-black font-bold text-xl shadow-md">
-                    <i class="fa-solid fa-compact-disc"></i>
-                </div>
-                <span class="text-2xl font-black text-white">DiscBeat</span>
-            </div>
-            <p id="auth-subtitle" class="text-xs text-[#b3b3b3]">התחבר לחשבון שלך או הירשם כמערכת חדשה</p>
-
-            <form class="form" onsubmit="handleAuthSubmit(event)">
-                <div class="flex-column">
-                    <label>Email</label>
-                </div>
-                <div class="inputForm">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" viewBox="0 0 32 32" height="20"><g data-name="Layer 3" id="Layer_3"><path d="m30.853 13.87a15 15 0 0 0 -29.729 4.082 15.1 15.1 0 0 0 12.876 12.918 15.6 15.6 0 0 0 2.016.13 14.85 14.85 0 0 0 7.715-2.145 1 1 0 1 0 -1.031-1.711 13.007 13.007 0 1 1 5.458-6.529 2.149 2.149 0 0 1 -4.158-.759v-10.856a1 1 0 0 0 -2 0v1.726a8 8 0 1 0 .2 10.325 4.135 4.135 0 0 0 7.83.274 15.2 15.2 0 0 0 .823-7.455zm-14.853 8.13a6 6 0 1 1 6-6 6.006 6.006 0 0 1 -6 6z"></path></g></svg>
-                    <input placeholder="הכנס אימייל" class="input" type="email" id="login-email" required>
-                </div>
-            
-                <div class="flex-column">
-                    <label>Password</label>
-                </div>
-                <div class="inputForm">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" viewBox="-64 0 512 512" height="20"><path d="m336 512h-288c-26.453125 0-48-21.523438-48-48v-224c0-26.476562 21.546875-48 48-48h288c26.453125 0 48 21.523438 48 48v224c0 26.476562-21.546875 48-48 48zm-288-288c-8.8125 0-16 7.167969-16 16v224c0 8.832031 7.1875 16 16 16h288c8.8125 0 16-7.167969 16-16v-224c0-8.832031-7.1875-16-16-16zm0 0"></path><path d="m304 224c-8.832031 0-16-7.167969-16-16v-80c0-52.929688-43.070312-96-96-96s-96 43.070312-96 96v80c0 8.832031-7.167969 16-16 16s-16-7.167969-16-16v-80c0-70.59375 57.40625-128 128-128s128 57.40625 128 128v80c0 8.832031-7.167969 16-16 16zm0 0"></path></svg> 
-                    <input placeholder="הכנס סיסמה" class="input" type="password" id="login-password" required>
-                </div>
-            
-                <div class="flex-row">
-                    <div>
-                        <input type="radio" id="remember-me" checked>
-                        <label for="remember-me">זכור אותי</label>
-                    </div>
-                    <span class="span" onclick="toggleAuthMode()" id="auth-switch-mode">אין לך חשבון? הירשם</span>
-                </div>
-                <button type="submit" id="auth-btn-submit" class="button-submit">התחבר</button>
-            </form>
-        </div>
+<!-- התחברות / הרשמה -->
+<div id="login-screen" class="fixed inset-0 z-[60] bg-[#121212] flex items-center justify-center p-4">
+  <div class="bg-[#181818] p-8 rounded-2xl w-full max-w-md border border-white/10 shadow-2xl animate-scaleIn">
+    <div class="flex items-center justify-center gap-2.5 mb-2">
+      <div class="w-10 h-10 rounded-full bg-[#1db954] flex items-center justify-center text-black text-xl"><i class="fa-solid fa-compact-disc"></i></div>
+      <span class="text-2xl font-black">DiscBeat</span>
     </div>
+    <p id="auth-subtitle" class="text-xs text-[#b3b3b3] text-center mb-5">התחבר לחשבון שלך</p>
+    <form class="flex flex-col gap-3" onsubmit="handleAuthSubmit(event)">
+      <input class="inp" type="email" id="login-email" placeholder="אימייל" autocomplete="email" required>
+      <input class="inp" type="password" id="login-password" placeholder="סיסמה (לפחות 6 תווים)" autocomplete="current-password" minlength="6" required>
+      <div class="flex justify-between items-center text-sm text-[#b3b3b3]">
+        <label class="flex items-center gap-2"><input type="checkbox" id="remember-me" checked class="accent-[#1db954]">זכור אותי</label>
+        <span class="text-[#1db954] font-semibold cursor-pointer" onclick="toggleAuthMode()" id="auth-switch-mode">אין לך חשבון? הירשם</span>
+      </div>
+      <button type="submit" id="auth-btn-submit" class="bg-[#1db954] hover:bg-[#1ed760] text-black font-extrabold py-3 rounded-full transition disabled:opacity-50">התחבר</button>
+    </form>
+  </div>
+</div>
 
-    <!-- App Container -->
-    <div id="app-container" class="flex-1 flex overflow-hidden relative">
-        <aside id="left-sidebar" class="hidden md:flex flex-col w-64 bg-black p-5 shrink-0 z-20 border-l border-[#282828] justify-between select-none">
-            <div>
-                <div class="flex items-center gap-2 mb-6 px-1">
-                    <span class="w-3 h-3 rounded-full bg-[#ff5f56] inline-block cursor-pointer"></span>
-                    <span class="w-3 h-3 rounded-full bg-[#ffbd2e] inline-block cursor-pointer"></span>
-                    <span class="w-3 h-3 rounded-full bg-[#27c93f] inline-block cursor-pointer"></span>
-                </div>
-
-                <div class="flex items-center gap-3 px-2 mb-8 cursor-pointer group" onclick="switchTab('home')">
-                    <div class="w-10 h-10 rounded-full bg-[#1db954] flex items-center justify-center text-black font-bold text-xl shadow-lg">
-                        <i class="fa-solid fa-compact-disc"></i>
-                    </div>
-                    <span class="text-2xl font-black tracking-tight text-white">DiscBeat</span>
-                </div>
-
-                <nav class="space-y-1.5">
-                    <button onclick="switchTab('home')" id="nav-home" class="w-full flex items-center gap-4 px-3.5 py-2.5 rounded-lg text-sm font-bold text-white bg-[#282828] transition">
-                        <i class="fa-solid fa-house text-lg w-5 text-center"></i> בית
-                    </button>
-                    <button onclick="switchTab('browse')" id="nav-browse" class="w-full flex items-center gap-4 px-3.5 py-2.5 rounded-lg text-sm font-bold text-[#b3b3b3] hover:text-white hover:bg-white/5 transition">
-                        <i class="fa-solid fa-magnifying-glass text-lg w-5 text-center"></i> חיפוש
-                    </button>
-                    <button onclick="switchTab('library')" id="nav-library" class="w-full flex items-center gap-4 px-3.5 py-2.5 rounded-lg text-sm font-bold text-[#b3b3b3] hover:text-white hover:bg-white/5 transition">
-                        <i class="fa-solid fa-book-open text-lg w-5 text-center"></i> הספרייה שלך
-                    </button>
-                    <button onclick="switchTab('admin')" id="nav-admin" class="hidden w-full flex items-center gap-4 px-3.5 py-2.5 rounded-lg text-sm font-bold text-amber-400 hover:text-amber-300 hover:bg-white/5 transition">
-                        <i class="fa-solid fa-user-shield text-lg w-5 text-center"></i> פאנל ניהול
-                    </button>
-                </nav>
-
-                <div class="my-6 border-t border-[#282828]"></div>
-
-                <div class="space-y-3">
-                    <button onclick="openCreateAlbumModal()" class="w-full flex items-center justify-center gap-2 bg-[#1db954] hover:bg-[#1ed760] text-black font-extrabold text-xs py-3 px-4 rounded-full transition shadow-lg active:scale-95">
-                        <i class="fa-solid fa-plus text-sm"></i> צור אלבום חדש
-                    </button>
-
-                    <div class="px-2 pt-2 text-[11px] font-bold uppercase tracking-wider text-[#b3b3b3]">האלבומים שלי</div>
-                    <div id="sidebar-album-container" class="max-h-48 overflow-y-auto space-y-1 pr-1"></div>
-                </div>
-            </div>
-
-            <div class="pt-4 border-t border-[#282828] text-xs text-[#b3b3b3] flex flex-col gap-1">
-                <div class="flex justify-between items-center px-1">
-                    <span>אלבומים:</span>
-                    <strong id="stat-albums-count" class="text-white font-bold">0</strong>
-                </div>
-                <div class="flex justify-between items-center px-1">
-                    <span>סך הכל שירים:</span>
-                    <strong id="stat-songs-count" class="text-white font-bold">0</strong>
-                </div>
-                <button onclick="logoutUser()" class="mt-2 text-red-400 hover:text-red-300 text-right font-bold transition">התנתק מהמערכת</button>
-            </div>
-        </aside>
-
-        <main id="main-content" class="flex-1 flex flex-col bg-gradient-to-b from-[#222222] via-[#121212] to-[#121212] overflow-y-auto relative">
-            <header class="sticky top-0 z-10 flex items-center justify-between px-6 py-4 bg-[#121212]/80 backdrop-blur-md gap-3 border-b border-white/5">
-                <div class="flex items-center gap-3">
-                    <button onclick="switchTab('home')" class="w-8 h-8 rounded-full bg-black/60 flex items-center justify-center text-[#b3b3b3] hover:text-white transition">
-                        <i class="fa-solid fa-chevron-right text-sm"></i>
-                    </button>
-                    <button onclick="switchTab('library')" class="w-8 h-8 rounded-full bg-black/60 flex items-center justify-center text-[#b3b3b3] hover:text-white transition">
-                        <i class="fa-solid fa-chevron-left text-sm"></i>
-                    </button>
-                </div>
-
-                <div class="flex items-center gap-3">
-                    <button onclick="openCreateAlbumModal()" class="md:hidden bg-[#1db954] text-black text-xs font-bold px-4 py-2 rounded-full flex items-center gap-1.5 shadow-lg">
-                        <i class="fa-solid fa-plus"></i> אלבום חדש
-                    </button>
-                    <div class="flex items-center gap-2 bg-black/60 px-3.5 py-1.5 rounded-full border border-white/10">
-                        <div class="w-6 h-6 rounded-full bg-[#1db954] text-black flex items-center justify-center font-bold text-xs" id="user-initial">U</div>
-                        <span class="text-xs font-bold text-white max-w-[120px] truncate" id="user-display-email">User</span>
-                    </div>
-                </div>
-            </header>
-
-            <div id="view-container" class="flex-1 px-4 md:px-6 pb-40"></div>
-        </main>
+<div id="app-container" class="flex-1 flex overflow-hidden relative">
+  <aside class="hidden md:flex flex-col w-64 bg-black p-5 shrink-0 z-20 border-l border-[#282828] justify-between">
+    <div>
+      <div class="flex items-center gap-3 px-2 mb-8 cursor-pointer" onclick="switchTab('home')">
+        <div class="w-10 h-10 rounded-full bg-[#1db954] flex items-center justify-center text-black text-xl"><i class="fa-solid fa-compact-disc"></i></div>
+        <span class="text-2xl font-black">DiscBeat</span>
+      </div>
+      <nav class="space-y-1.5">
+        <button onclick="switchTab('home')" id="nav-home" class="w-full flex items-center gap-4 px-3.5 py-2.5 rounded-lg text-sm font-bold text-white bg-[#282828] transition"><i class="fa-solid fa-house w-5 text-center"></i> בית</button>
+        <button onclick="switchTab('browse')" id="nav-browse" class="w-full flex items-center gap-4 px-3.5 py-2.5 rounded-lg text-sm font-bold text-[#b3b3b3] hover:text-white transition"><i class="fa-solid fa-magnifying-glass w-5 text-center"></i> חיפוש</button>
+        <button onclick="switchTab('library')" id="nav-library" class="w-full flex items-center gap-4 px-3.5 py-2.5 rounded-lg text-sm font-bold text-[#b3b3b3] hover:text-white transition"><i class="fa-solid fa-book-open w-5 text-center"></i> הספרייה שלך</button>
+        <button onclick="switchTab('admin')" id="nav-admin" class="hidden w-full items-center gap-4 px-3.5 py-2.5 rounded-lg text-sm font-bold text-amber-400 transition"><i class="fa-solid fa-user-shield w-5 text-center"></i> פאנל ניהול</button>
+      </nav>
+      <div class="my-6 border-t border-[#282828]"></div>
+      <button onclick="openCreateAlbumModal()" class="w-full flex items-center justify-center gap-2 bg-[#1db954] hover:bg-[#1ed760] text-black font-extrabold text-xs py-3 rounded-full transition"><i class="fa-solid fa-plus"></i> צור אלבום חדש</button>
+      <div class="px-2 pt-4 pb-1 text-[11px] font-bold text-[#b3b3b3]">האלבומים שלי</div>
+      <div id="sidebar-album-container" class="max-h-48 overflow-y-auto space-y-1"></div>
     </div>
-
-    <!-- סרגל ניווט תחתון לטלפונים ניידים -->
-    <nav class="md:hidden fixed bottom-24 left-0 right-0 bg-[#181818]/95 backdrop-blur-md border-t border-[#282828] flex justify-around py-2.5 z-40">
-        <button onclick="switchTab('home')" class="flex flex-col items-center gap-1 text-white" id="mob-nav-home">
-            <i class="fa-solid fa-house text-base"></i>
-            <span class="text-[10px] font-bold">בית</span>
-        </button>
-        <button onclick="switchTab('browse')" class="flex flex-col items-center gap-1 text-[#b3b3b3]" id="mob-nav-browse">
-            <i class="fa-solid fa-magnifying-glass text-base"></i>
-            <span class="text-[10px] font-bold">חיפוש</span>
-        </button>
-        <button onclick="switchTab('library')" class="flex flex-col items-center gap-1 text-[#b3b3b3]" id="mob-nav-library">
-            <i class="fa-solid fa-book-open text-base"></i>
-            <span class="text-[10px] font-bold">הספרייה</span>
-        </button>
-        <button onclick="switchTab('admin')" class="hidden flex flex-col items-center gap-1 text-amber-400" id="mob-nav-admin">
-            <i class="fa-solid fa-user-shield text-base"></i>
-            <span class="text-[10px] font-bold">ניהול</span>
-        </button>
-    </nav>
-
-    <!-- Bottom Player Bar -->
-    <footer id="bottom-player" class="h-24 bg-black border-t border-[#282828] px-4 md:px-6 flex items-center justify-between z-50 fixed bottom-0 left-0 right-0">
-        <div class="flex items-center gap-3.5 w-1/3 min-w-[120px]">
-            <div id="player-art-container" onclick="openFullscreenPlayer()" class="w-12 h-12 md:w-14 md:h-14 bg-[#282828] rounded-lg overflow-hidden shrink-0 relative cursor-pointer group shadow-lg">
-                <img id="player-art" src="https://placehold.co/120x120/282828/ffffff?text=🎵" alt="עטיפה" class="w-full h-full object-cover">
-            </div>
-            <div class="overflow-hidden cursor-pointer" onclick="openFullscreenPlayer()">
-                <div id="player-title" class="text-xs md:text-sm font-bold truncate hover:underline">אין שיר נבחר</div>
-                <div id="player-artist" class="text-[11px] md:text-xs text-[#b3b3b3] truncate mt-0.5">בחר אלבום להשמעה</div>
-            </div>
-        </div>
-
-        <div class="flex flex-col items-center max-w-xl w-1/3 px-2">
-            <div class="flex items-center gap-4 md:gap-7 mb-1.5">
-                <button onclick="playPreviousSong()" class="text-[#b3b3b3] hover:text-white transition text-sm md:text-base" title="שיר קודם">
-                    <i class="fa-solid fa-backward-step"></i>
-                </button>
-                <button onclick="togglePlayPause()" id="btn-play-pause" class="w-8 h-8 md:w-10 md:h-10 rounded-full bg-white text-black flex items-center justify-center hover:scale-105 active:scale-95 transition shadow-md">
-                    <i class="fa-solid fa-play text-xs md:text-sm ml-0.5"></i>
-                </button>
-                <button onclick="playNextSong()" class="text-[#b3b3b3] hover:text-white transition text-sm md:text-base" title="שיר הבא">
-                    <i class="fa-solid fa-forward-step"></i>
-                </button>
-            </div>
-
-            <div class="hidden sm:flex items-center gap-2.5 w-full text-[11px] font-mono text-[#b3b3b3]" dir="ltr">
-                <span id="current-time">0:00</span>
-                <input type="range" id="progress-slider" min="0" max="100" value="0" step="0.1" class="flex-1 h-1 bg-[#4d4d4d] rounded-lg appearance-none cursor-pointer slider-thumb accent-[#1db954]" oninput="seekAudio(this.value)">
-                <span id="total-duration">0:00</span>
-            </div>
-        </div>
-
-        <div class="hidden sm:flex items-center justify-end gap-3 w-1/3">
-            <div class="flex items-center gap-2">
-                <button onclick="toggleMute()" id="btn-volume-icon" class="text-[#b3b3b3] hover:text-white transition text-sm">
-                    <i class="fa-solid fa-volume-high"></i>
-                </button>
-                <input type="range" id="volume-slider" min="0" max="1" value="1" step="0.01" class="w-20 h-1 bg-[#4d4d4d] rounded-lg appearance-none cursor-pointer slider-thumb accent-white" oninput="adjustVolume(this.value)">
-            </div>
-            <button onclick="openFullscreenPlayer()" class="text-[#b3b3b3] hover:text-white transition text-sm ml-2" title="מסך מלא">
-                <i class="fa-solid fa-expand"></i>
-            </button>
-        </div>
-    </footer>
-
-    <!-- Fullscreen Player -->
-    <div id="fullscreen-player" class="fixed inset-0 z-50 hidden bg-gradient-to-b from-black via-[#383838] to-black flex-col justify-between p-6 md:p-12 transition-all duration-300">
-        <div class="flex items-center justify-between w-full">
-            <div class="flex items-center gap-2">
-                <span class="w-3 h-3 rounded-full bg-[#ff5f56]"></span>
-                <span class="w-3 h-3 rounded-full bg-[#ffbd2e]"></span>
-                <span class="w-3 h-3 rounded-full bg-[#27c93f]"></span>
-            </div>
-            <button onclick="closeFullscreenPlayer()" class="w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition shadow-xl">
-                <i class="fa-solid fa-chevron-down text-lg"></i>
-            </button>
-        </div>
-
-        <div class="flex-1 flex flex-col items-center justify-center my-6 max-w-xl mx-auto text-center w-full">
-            <div class="w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96 rounded-2xl overflow-hidden shadow-2xl mb-8 border border-white/10 bg-[#282828]">
-                <img id="fs-player-art" src="https://placehold.co/400x400/282828/ffffff?text=DiscBeat" alt="Full Artwork" class="w-full h-full object-cover">
-            </div>
-            
-            <div class="w-full flex items-center justify-between px-4 mb-2">
-                <div class="text-right overflow-hidden">
-                    <h1 id="fs-player-title" class="text-2xl sm:text-4xl font-black text-white truncate leading-tight">אין שיר נבחר</h1>
-                    <p id="fs-player-artist" class="text-lg sm:text-2xl font-medium text-[#b3b3b3] truncate mt-1">אמן לא ידוע</p>
-                </div>
-            </div>
-
-            <div class="w-full px-4 my-6">
-                <div class="flex items-center gap-3 text-xs font-mono text-[#b3b3b3]" dir="ltr">
-                    <span id="fs-current-time">0:00</span>
-                    <input type="range" id="fs-progress-slider" min="0" max="100" value="0" step="0.1" class="flex-1 h-1.5 bg-[#4d4d4d] rounded-lg appearance-none cursor-pointer slider-thumb accent-[#1db954]" oninput="seekAudio(this.value)">
-                    <span id="fs-total-duration">0:00</span>
-                </div>
-            </div>
-
-            <div class="flex items-center gap-8 my-2">
-                <button onclick="playPreviousSong()" class="text-white transition text-2xl">
-                    <i class="fa-solid fa-backward-step"></i>
-                </button>
-                <button onclick="togglePlayPause()" id="fs-btn-play-pause" class="w-16 h-16 rounded-full bg-[#1db954] text-black flex items-center justify-center hover:scale-105 active:scale-95 transition shadow-2xl">
-                    <i class="fa-solid fa-play text-xl ml-1"></i>
-                </button>
-                <button onclick="playNextSong()" class="text-white transition text-2xl">
-                    <i class="fa-solid fa-forward-step"></i>
-                </button>
-            </div>
-        </div>
-        <div class="text-center text-xs text-white/40">DiscBeat Fullscreen View Mode</div>
+    <div class="pt-4 border-t border-[#282828] text-xs text-[#b3b3b3] space-y-1">
+      <div class="flex justify-between"><span>אלבומים:</span><strong id="stat-albums-count" class="text-white">0</strong></div>
+      <div class="flex justify-between"><span>סך הכל שירים:</span><strong id="stat-songs-count" class="text-white">0</strong></div>
+      <button onclick="logoutUser()" class="mt-2 text-red-400 hover:text-red-300 font-bold">התנתק</button>
     </div>
+  </aside>
 
-    <audio id="audio-element" preload="metadata"></audio>
-
-    <!-- Modal for Creating Album -->
-    <div id="create-album-modal" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-[#282828] rounded-2xl p-6 max-w-lg w-full shadow-2xl border border-white/10 animate-scaleIn overflow-y-auto max-h-[90vh]">
-            <div class="flex items-center justify-between mb-5 border-b border-white/10 pb-3">
-                <h3 class="text-xl font-bold text-white">יצירת אלבום חדש</h3>
-                <button onclick="closeCreateAlbumModal()" class="text-[#b3b3b3] hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
-            </div>
-            
-            <form onsubmit="handleCreateAlbumSubmit(event)" class="space-y-4">
-                <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider text-[#b3b3b3] mb-1.5">שם האלבום</label>
-                    <input type="text" id="input-album-title" required placeholder="לדוגמה: אוסף קיץ" class="w-full px-4 py-2.5 bg-[#121212] rounded-lg text-sm text-white focus:outline-none border border-white/10 focus:border-[#1db954]">
-                </div>
-
-                <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider text-[#b3b3b3] mb-1.5">שם האמן / יוצר</label>
-                    <input type="text" id="input-album-artist" required placeholder="לדוגמה: אמן ראשי" class="w-full px-4 py-2.5 bg-[#121212] rounded-lg text-sm text-white focus:outline-none border border-white/10 focus:border-[#1db954]">
-                </div>
-
-                <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider text-[#b3b3b3] mb-1.5">תמונת עטיפה</label>
-                    <div class="flex flex-col gap-2">
-                        <label class="cursor-pointer bg-[#3e3e3e] hover:bg-[#4e4e4e] px-4 py-3 rounded-lg text-xs font-bold flex items-center justify-center gap-2 text-white border border-white/10">
-                            <i class="fa-solid fa-image text-sm text-[#1db954]"></i>
-                            <span id="cover-filename-label">העלה קובץ תמונה</span>
-                            <input type="file" id="input-album-cover-file" accept="image/*" class="hidden" onchange="handleCoverFileSelect(event)">
-                        </label>
-                        <div id="cover-preview-container" class="hidden mt-2 flex items-center gap-3 bg-[#121212] p-2 rounded-lg">
-                            <img id="cover-preview-img" src="" alt="תצוגה מקדימה" class="w-12 h-12 object-cover rounded">
-                            <span class="text-xs text-[#b3b3b3]">תצוגה מקדימה לעטיפה</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider text-[#b3b3b3] mb-1.5">קבצי שמע</label>
-                    <label class="cursor-pointer flex flex-col items-center justify-center border-2 border-dashed border-white/20 hover:border-[#1db954] bg-[#121212] rounded-xl p-6 transition group text-center">
-                        <i class="fa-solid fa-cloud-arrow-up text-3xl text-[#1db954] mb-2 group-hover:scale-110 transition"></i>
-                        <span id="selected-files-label" class="text-sm font-bold text-white">לחץ לבחירת קבצי שמע</span>
-                        <input type="file" id="input-album-songs" accept="audio/*" multiple required class="hidden" onchange="updateFilesLabel(event)">
-                    </label>
-                </div>
-
-                <div class="flex justify-end gap-3 pt-3">
-                    <button type="button" onclick="closeCreateAlbumModal()" class="px-5 py-2.5 rounded-full text-sm font-bold text-[#b3b3b3] hover:text-white">ביטול</button>
-                    <button type="submit" class="px-6 py-2.5 bg-[#1db954] hover:bg-[#1ed760] text-black font-extrabold text-sm rounded-full shadow-lg transition">צור אלבום</button>
-                </div>
-            </form>
+  <main class="flex-1 flex flex-col bg-gradient-to-b from-[#222] via-[#121212] to-[#121212] overflow-y-auto relative">
+    <header class="sticky top-0 z-10 flex items-center justify-between px-4 md:px-6 py-3 bg-[#121212]/80 backdrop-blur-md border-b border-white/5">
+      <div class="flex items-center gap-2 md:hidden">
+        <div class="w-8 h-8 rounded-full bg-[#1db954] flex items-center justify-center text-black"><i class="fa-solid fa-compact-disc"></i></div>
+        <button onclick="openCreateAlbumModal()" class="bg-[#1db954] text-black text-xs font-bold px-3 py-2 rounded-full"><i class="fa-solid fa-plus"></i> אלבום</button>
+      </div>
+      <div class="hidden md:block"></div>
+      <div class="flex items-center gap-2">
+        <div class="flex items-center gap-2 bg-black/60 px-3 py-1.5 rounded-full border border-white/10">
+          <div class="w-6 h-6 rounded-full bg-[#1db954] text-black flex items-center justify-center font-bold text-xs" id="user-initial">U</div>
+          <span class="text-xs font-bold max-w-[110px] truncate" id="user-display-email"></span>
         </div>
+        <button onclick="logoutUser()" title="התנתק" class="md:hidden w-9 h-9 rounded-full bg-black/60 text-red-400 flex items-center justify-center"><i class="fa-solid fa-right-from-bracket"></i></button>
+      </div>
+    </header>
+    <div id="view-container" class="flex-1 px-4 md:px-6 pb-56 md:pb-40"></div>
+  </main>
+</div>
+
+<!-- ניווט תחתון לנייד -->
+<nav class="md:hidden fixed bottom-24 left-0 right-0 bg-[#181818]/95 backdrop-blur-md border-t border-[#282828] flex justify-around py-2.5 z-40">
+  <button onclick="switchTab('home')" id="mob-nav-home" class="flex flex-col items-center gap-1 text-white"><i class="fa-solid fa-house"></i><span class="text-[10px] font-bold">בית</span></button>
+  <button onclick="switchTab('browse')" id="mob-nav-browse" class="flex flex-col items-center gap-1 text-[#b3b3b3]"><i class="fa-solid fa-magnifying-glass"></i><span class="text-[10px] font-bold">חיפוש</span></button>
+  <button onclick="switchTab('library')" id="mob-nav-library" class="flex flex-col items-center gap-1 text-[#b3b3b3]"><i class="fa-solid fa-book-open"></i><span class="text-[10px] font-bold">הספרייה</span></button>
+  <button onclick="switchTab('admin')" id="mob-nav-admin" class="hidden flex-col items-center gap-1 text-amber-400"><i class="fa-solid fa-user-shield"></i><span class="text-[10px] font-bold">ניהול</span></button>
+</nav>
+
+<!-- נגן תחתון -->
+<footer class="h-24 bg-black border-t border-[#282828] px-4 md:px-6 flex items-center justify-between z-50 fixed bottom-0 left-0 right-0">
+  <div class="flex items-center gap-3 w-1/3 min-w-[110px] cursor-pointer" onclick="openFullscreenPlayer()">
+    <img id="player-art" src="https://placehold.co/120x120/282828/ffffff?text=🎵" class="w-12 h-12 md:w-14 md:h-14 rounded-lg object-cover shrink-0">
+    <div class="overflow-hidden">
+      <div id="player-title" class="text-xs md:text-sm font-bold truncate">אין שיר נבחר</div>
+      <div id="player-artist" class="text-[11px] md:text-xs text-[#b3b3b3] truncate">בחר אלבום להשמעה</div>
     </div>
-
-    <script>
-        const ADMIN_EMAIL = 'tidharhaime142014@gmail.com';
-
-        let currentUserEmail = null;
-        let db = null;
-        let STORE_NAME = 'albums';
-        let albumsList = [];
-        let sharedAlbumsList = [];
-        let activeTab = 'home';
-        let currentAlbumId = null;
-        let currentSongIndex = -1;
-        let isPlaying = false;
-        let tempCoverBlob = null;
-        let isRegisterMode = false;
-
-        const audioElement = document.getElementById('audio-element');
-
-        function toggleAuthMode() {
-            isRegisterMode = !isRegisterMode;
-            const subtitle = document.getElementById('auth-subtitle');
-            const switchBtn = document.getElementById('auth-switch-mode');
-            const submitBtn = document.getElementById('auth-btn-submit');
-
-            if (isRegisterMode) {
-                subtitle.innerText = "הירשם עם אימייל וסיסמה חדשים למערכת";
-                switchBtn.innerText = "כבר יש לך חשבון? התחבר";
-                submitBtn.innerText = "הירשם";
-            } else {
-                subtitle.innerText = "התחבר לחשבון שלך או הירשם כמערכת חדשה";
-                switchBtn.innerText = "אין לך חשבון? הירשם";
-                submitBtn.innerText = "התחבר";
-            }
-        }
-
-        function getUsersDB() {
-            let dbStore = localStorage.getItem('discbeat_global_users');
-            if (!dbStore) {
-                let initial = {};
-                initial[ADMIN_EMAIL] = { password: 'adminpassword', blockedFromCreating: false, role: 'owner' };
-                localStorage.setItem('discbeat_global_users', JSON.stringify(initial));
-                return initial;
-            }
-            return JSON.parse(dbStore);
-        }
-
-        function saveUsersDB(usersDB) {
-            localStorage.setItem('discbeat_global_users', JSON.stringify(usersDB));
-        }
-
-        function handleAuthSubmit(event) {
-            event.preventDefault();
-            const email = document.getElementById('login-email').value.trim().toLowerCase();
-            const password = document.getElementById('login-password').value;
-            const remember = document.getElementById('remember-me').checked;
-
-            let usersDB = getUsersDB();
-
-            if (isRegisterMode) {
-                if (email === ADMIN_EMAIL) {
-                    usersDB[email] = { password: password, blockedFromCreating: false, role: 'owner' };
-                    saveUsersDB(usersDB);
-                    alert('נרשמת בהצלחה כמנהל המערכת!');
-                    performLogin(email, remember);
-                    return;
-                }
-
-                if (usersDB[email]) {
-                    alert('האימייל הזה כבר רשום במערכת! אנא התחבר.');
-                    return;
-                }
-                usersDB[email] = { password: password, blockedFromCreating: false, role: 'user' };
-                saveUsersDB(usersDB);
-                alert('נרשמת בהצלחה למערכת!');
-                performLogin(email, remember);
-            } else {
-                if (!usersDB[email]) {
-                    usersDB[email] = { password: password, blockedFromCreating: false, role: (email === ADMIN_EMAIL ? 'owner' : 'user') };
-                    saveUsersDB(usersDB);
-                }
-                
-                const userObj = typeof usersDB[email] === 'object' ? usersDB[email] : { password: usersDB[email] };
-                if (userObj.password !== password) {
-                    alert('סיסמה שגויה!');
-                    return;
-                }
-                performLogin(email, remember);
-            }
-        }
-
-        function initDBForUser(email) {
-            return new Promise((resolve, reject) => {
-                const sanitizedEmail = email.replace(/[^a-zA-Z0-9]/g, '_');
-                const dbName = `DiscBeat_SyncDB_${sanitizedEmail}`;
-                
-                const request = indexedDB.open(dbName, 1);
-                request.onerror = (e) => reject(e.target.error);
-                request.onsuccess = (e) => {
-                    db = e.target.result;
-                    resolve(db);
-                };
-                request.onupgradeneeded = (e) => {
-                    const database = e.target.result;
-                    if (!database.objectStoreNames.contains(STORE_NAME)) {
-                        database.createObjectStore(STORE_NAME, { keyPath: 'id', autoIncrement: true });
-                    }
-                };
-            });
-        }
-
-        async function loadAlbumsFromDB() {
-            return new Promise((resolve, reject) => {
-                const transaction = db.transaction([STORE_NAME], 'readonly');
-                const store = transaction.objectStore(STORE_NAME);
-                const request = store.getAll();
-                request.onsuccess = () => {
-                    albumsList = request.result || [];
-                    
-                    albumsList.forEach(album => {
-                        if (album.coverBlob) {
-                            album.coverUrl = URL.createObjectURL(album.coverBlob);
-                        }
-                        if (album.songs) {
-                            album.songs.forEach(song => {
-                                if (song.blob) {
-                                    song.url = URL.createObjectURL(song.blob);
-                                }
-                            });
-                        }
-                    });
-
-                    loadSharedAlbums();
-                    resolve();
-                };
-                request.onerror = (e) => reject(e);
-            });
-        }
-
-        function loadSharedAlbums() {
-            let sharedDB = JSON.parse(localStorage.getItem('discbeat_shared_albums') || '{}');
-            sharedAlbumsList = sharedDB[currentUserEmail] || [];
-            
-            sharedAlbumsList.forEach(album => {
-                if (album.songs) {
-                    album.songs.forEach(song => {
-                        if (song.blob && !song.url) {
-                            song.url = URL.createObjectURL(song.blob);
-                        }
-                    });
-                }
-            });
-        }
-
-        async function saveAlbumToDB(albumObj) {
-            return new Promise((resolve, reject) => {
-                const transaction = db.transaction([STORE_NAME], 'readwrite');
-                const store = transaction.objectStore(STORE_NAME);
-                const request = store.add(albumObj);
-                request.onsuccess = () => resolve(request.result);
-                request.onerror = (e) => reject(e);
-            });
-        }
-
-        async function deleteAlbumFromDB(id) {
-            return new Promise((resolve, reject) => {
-                const transaction = db.transaction([STORE_NAME], 'readwrite');
-                const store = transaction.objectStore(STORE_NAME);
-                const request = store.delete(id);
-                request.onsuccess = () => resolve();
-                request.onerror = (e) => reject(e);
-            });
-        }
-
-        function shareAlbumWithUser(albumId) {
-            const album = albumsList.find(a => String(a.id) === String(albumId));
-            if (!album) return;
-
-            const targetEmail = prompt(`הכנס את כתובת האימייל של המשתמש שאיתו תרצה לשתף את האלבום "${album.title}":`).trim().toLowerCase();
-            if (!targetEmail || !targetEmail.includes('@')) {
-                alert('נא להכניס אימייל תקין.');
-                return;
-            }
-
-            let sharedDB = JSON.parse(localStorage.getItem('discbeat_shared_albums') || '{}');
-            if (!sharedDB[targetEmail]) {
-                sharedDB[targetEmail] = [];
-            }
-
-            const sharedAlbum = {
-                id: 'shared_' + Date.now(),
-                title: album.title,
-                artist: album.artist,
-                sharedBy: currentUserEmail,
-                songs: album.songs
-            };
-
-            sharedDB[targetEmail].push(sharedAlbum);
-            localStorage.setItem('discbeat_shared_albums', JSON.stringify(sharedDB));
-
-            alert(`✅ האלבום "${album.title}" שותף בהצלחה עם ${targetEmail}!`);
-        }
-
-        async function performLogin(email, remember) {
-            currentUserEmail = email;
-            if (remember) {
-                localStorage.setItem('discbeat_logged_user', email);
-            }
-
-            document.getElementById('user-display-email').innerText = email;
-            document.getElementById('user-initial').innerText = email.charAt(0).toUpperCase();
-
-            let usersDB = getUsersDB();
-            const userObj = usersDB[email] || {};
-            const isOwnerOrAdmin = (email === ADMIN_EMAIL) || (userObj.role === 'owner');
-
-            const adminBtn = document.getElementById('nav-admin');
-            const mobAdminBtn = document.getElementById('mob-nav-admin');
-            if (isOwnerOrAdmin) {
-                if (adminBtn) adminBtn.classList.remove('hidden');
-                if (mobAdminBtn) mobAdminBtn.classList.remove('hidden');
-            } else {
-                if (adminBtn) adminBtn.classList.add('hidden');
-                if (mobAdminBtn) mobAdminBtn.classList.add('hidden');
-            }
-            
-            await initDBForUser(email);
-            await loadAlbumsFromDB();
-
-            updateGlobalStats();
-            renderView();
-            renderSidebarAlbums();
-
-            const loginScreen = document.getElementById('login-screen');
-            loginScreen.style.opacity = '0';
-            loginScreen.style.transition = 'opacity 0.3s ease';
-            setTimeout(() => {
-                loginScreen.style.display = 'none';
-            }, 300);
-        }
-
-        function logoutUser() {
-            localStorage.removeItem('discbeat_logged_user');
-            location.reload();
-        }
-
-        window.addEventListener('DOMContentLoaded', async () => {
-            getUsersDB();
-            
-            const savedUser = localStorage.getItem('discbeat_logged_user');
-            if (savedUser) {
-                await performLogin(savedUser, true);
-            }
-
-            audioElement.addEventListener('timeupdate', () => {
-                if (!isNaN(audioElement.duration)) {
-                    const progressPercent = (audioElement.currentTime / audioElement.duration) * 100;
-                    document.getElementById('progress-slider').value = progressPercent;
-                    document.getElementById('current-time').innerText = formatTime(audioElement.currentTime);
-                    document.getElementById('total-duration').innerText = formatTime(audioElement.duration);
-
-                    document.getElementById('fs-progress-slider').value = progressPercent;
-                    document.getElementById('fs-current-time').innerText = formatTime(audioElement.currentTime);
-                    document.getElementById('fs-total-duration').innerText = formatTime(audioElement.duration);
-                }
-            });
-
-            audioElement.addEventListener('ended', () => {
-                playNextSong();
-            });
-
-            audioElement.addEventListener('play', () => {
-                isPlaying = true;
-                updatePlayPauseButton();
-            });
-
-            audioElement.addEventListener('pause', () => {
-                isPlaying = false;
-                updatePlayPauseButton();
-            });
-        });
-
-        function updateGlobalStats() {
-            let totalSongs = 0;
-            albumsList.forEach(album => {
-                if (album.songs) totalSongs += album.songs.length;
-            });
-            document.getElementById('stat-albums-count').innerText = albumsList.length;
-            document.getElementById('stat-songs-count').innerText = totalSongs;
-        }
-
-        function switchTab(tab) {
-            activeTab = tab;
-            currentAlbumId = null;
-            ['home', 'browse', 'library', 'admin'].forEach(t => {
-                const navBtn = document.getElementById(`nav-${t}`);
-                const mobBtn = document.getElementById(`mob-nav-${t}`);
-
-                if (navBtn) {
-                    navBtn.className = (t === tab) ? 
-                        (t === 'admin' ? "w-full flex items-center gap-4 px-3.5 py-2.5 rounded-lg text-sm font-bold text-amber-400 bg-[#282828] transition" : "w-full flex items-center gap-4 px-3.5 py-2.5 rounded-lg text-sm font-bold text-white bg-[#282828] transition") : 
-                        (t === 'admin' ? "w-full flex items-center gap-4 px-3.5 py-2.5 rounded-lg text-sm font-bold text-amber-400 hover:text-amber-300 hover:bg-white/5 transition" : "w-full flex items-center gap-4 px-3.5 py-2.5 rounded-lg text-sm font-bold text-[#b3b3b3] hover:text-white hover:bg-white/5 transition");
-                }
-
-                if (mobBtn) {
-                    mobBtn.className = (t === tab) ?
-                        (t === 'admin' ? "flex flex-col items-center gap-1 text-amber-400 font-extrabold" : "flex flex-col items-center gap-1 text-white font-extrabold") :
-                        (t === 'admin' ? "flex flex-col items-center gap-1 text-amber-400/60" : "flex flex-col items-center gap-1 text-[#b3b3b3]");
-                }
-            });
-            renderView();
-        }
-
-        function openAlbumDetail(albumId) {
-            currentAlbumId = albumId;
-            renderView();
-        }
-
-        function renderView() {
-            const container = document.getElementById('view-container');
-            if (!container) return;
-
-            let usersDB = getUsersDB();
-            const userObj = usersDB[currentUserEmail] || {};
-            const isOwnerOrAdmin = (currentUserEmail === ADMIN_EMAIL) || (userObj.role === 'owner');
-
-            if (activeTab === 'admin' && isOwnerOrAdmin) {
-                renderAdminPanel(container);
-                return;
-            }
-
-            if (currentAlbumId !== null) {
-                const album = albumsList.find(a => String(a.id) === String(currentAlbumId)) || sharedAlbumsList.find(a => String(a.id) === String(currentAlbumId));
-                if (!album) {
-                    switchTab('home');
-                    return;
-                }
-
-                container.innerHTML = `
-                    <div class="py-6">
-                        <div class="flex flex-col md:flex-row items-start md:items-end gap-6 mb-8 bg-gradient-to-b from-[#3a3a3a] to-transparent p-6 rounded-2xl shadow-xl">
-                            <img src="${album.coverUrl || 'https://placehold.co/200x200/282828/ffffff?text=Album'}" class="w-44 h-44 object-cover shadow-2xl rounded-xl" alt="עטיפה">
-                            <div class="flex-1">
-                                <span class="text-xs uppercase font-extrabold tracking-widest text-[#1db954]">אלבום מוזיקה ${album.sharedBy ? `(שותף על ידי ${album.sharedBy})` : ''}</span>
-                                <h1 class="text-3xl md:text-5xl font-black mt-1 mb-2">${album.title}</h1>
-                                <p class="text-sm text-[#b3b3b3] font-semibold">${album.artist} • ${album.songs ? album.songs.length : 0} שירים</p>
-                            </div>
-                            <div class="flex items-center gap-3">
-                                ${album.songs && album.songs.length > 0 ? `
-                                    <button onclick="playAlbumSong('${album.id}', 0)" class="w-14 h-14 rounded-full bg-[#1db954] hover:bg-[#1ed760] text-black flex items-center justify-center text-xl shadow-2xl hover:scale-105 transition">
-                                        <i class="fa-solid fa-play ml-0.5"></i>
-                                    </button>
-                                ` : ''}
-                                ${!album.sharedBy ? `
-                                    <button onclick="shareAlbumWithUser(${album.id})" class="p-3.5 bg-blue-600/20 hover:bg-blue-600 text-blue-400 hover:text-white rounded-full transition text-sm" title="שתף אלבום זה">
-                                        <i class="fa-solid fa-share-nodes"></i>
-                                    </button>
-                                    <button onclick="removeAlbum(${album.id})" class="p-3.5 bg-red-600/20 hover:bg-red-600 text-red-400 hover:text-white rounded-full transition text-sm" title="מחק אלבום">
-                                        <i class="fa-solid fa-trash-can"></i>
-                                    </button>
-                                ` : ''}
-                            </div>
-                        </div>
-
-                        <div class="space-y-1">
-                            ${album.songs && album.songs.length > 0 ? album.songs.map((song, idx) => `
-                                <div onclick="playAlbumSong('${album.id}',${idx})" class="flex items-center justify-between p-3 rounded-lg hover:bg-white/10 transition cursor-pointer group">
-                                    <div class="flex items-center gap-4">
-                                        <span class="w-6 text-center text-sm text-[#b3b3b3] group-hover:text-white">${idx + 1}</span>
-                                        <div>
-                                            <div class="text-sm font-bold text-white">${song.name}</div>
-                                            <div class="text-xs text-[#b3b3b3]">${album.artist}</div>
-                                        </div>
-                                    </div>
-                                    <button class="text-white opacity-0 group-hover:opacity-100 transition"><i class="fa-solid fa-play"></i></button>
-                                </div>
-                            `).join('') : '<p class="text-[#b3b3b3] text-sm">אין שירים באלבום זה.</p>'}
-                        </div>
-                    </div>
-                `;
-                return;
-            }
-
-            if (activeTab === 'browse' || activeTab === 'library') {
-                container.innerHTML = `
-                    <div class="py-8">
-                        <h1 class="text-3xl font-black mb-6">${activeTab === 'browse' ? 'חיפוש אלבומים' : 'הספרייה שלך'}</h1>
-                        <input type="text" id="search-input" oninput="filterAlbums(this.value)" placeholder="חפש לפי שם אלבום או אמן..." class="w-full md:w-96 px-4 py-3 bg-[#2a2a2a] rounded-xl text-sm text-white focus:outline-none border border-white/10 focus:border-[#1db954] mb-8">
-                        <div id="browse-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
-                            ${renderAlbumsHtml(albumsList)}
-                        </div>
-                    </div>
-                `;
-                return;
-            }
-
-            container.innerHTML = `
-                <div class="py-6 space-y-8">
-                    <div>
-                        <h2 class="text-2xl font-black tracking-tight mb-4">האלבומים שלך ב-DiscBeat</h2>
-                        ${albumsList.length === 0 ? `
-                            <p class="text-sm text-[#b3b3b3]">אין לך עדיין אלבומים. לחץ על "צור אלבום חדש" כדי להתחיל.</p>
-                        ` : `
-                            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
-                                ${renderAlbumsHtml(albumsList)}
-                            </div>
-                        `}
-                    </div>
-
-                    ${sharedAlbumsList.length > 0 ? `
-                        <div>
-                            <h2 class="text-2xl font-black tracking-tight mb-4 text-blue-400"><i class="fa-solid fa-share-nodes text-lg ml-2"></i>אלבומים ששותפו איתי</h2>
-                            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
-                                ${renderAlbumsHtml(sharedAlbumsList)}
-                            </div>
-                        </div>
-                    ` : ''}
-                </div>
-            `;
-        }
-
-        function renderAdminPanel(container) {
-            let usersDB = getUsersDB();
-            let userEmails = Object.keys(usersDB);
-
-            container.innerHTML = `
-                <div class="py-8 space-y-6">
-                    <div class="flex items-center gap-3 border-b border-white/10 pb-4">
-                        <i class="fa-solid fa-user-shield text-3xl text-amber-400"></i>
-                        <div>
-                            <h1 class="text-3xl font-black text-white">פאנל ניהול ובעלות</h1>
-                            <p class="text-xs text-[#b3b3b3]">מנהל מערכת: ${currentUserEmail}</p>
-                        </div>
-                    </div>
-
-                    <div class="bg-[#181818] rounded-xl p-6 border border-white/10 shadow-xl space-y-4">
-                        <h2 class="text-xl font-bold text-amber-400 mb-4"><i class="fa-solid fa-users text-sm ml-2"></i>ניהול משתמשים, הרשאות ובעלות</h2>
-                        
-                        ${userEmails.length === 0 ? '<p class="text-sm text-[#b3b3b3]">אין משתמשים רשומים במערכת.</p>' : `
-                            <div class="space-y-3">
-                                ${userEmails.map(email => {
-                                    const uData = usersDB[email] || {};
-                                    const isBlocked = uData.blockedFromCreating;
-                                    const isOwner = uData.role === 'owner';
-                                    return `
-                                        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-[#222222] rounded-lg border border-white/5 gap-3">
-                                            <div>
-                                                <div class="font-bold text-white text-sm">${email} ${email === ADMIN_EMAIL ? '<span class="text-amber-400 text-xs">(מנהל ראשי)</span>' : (isOwner ? '<span class="text-yellow-400 text-xs">(בעלים)</span>' : '')}</div>
-                                                <div class="text-xs text-[#b3b3b3]">סטטוס יצירה: ${isBlocked ? '<span class="text-red-400 font-bold">חסום</span>' : '<span class="text-green-400 font-bold">מורשה</span>'}</div>
-                                            </div>
-                                            <div class="flex flex-wrap items-center gap-2">
-                                                ${email !== ADMIN_EMAIL ? `
-                                                    <button onclick="toggleUserOwnerRole('${email}')" class="px-3 py-1.5 text-xs font-bold rounded-full border ${isOwner ? 'border-yellow-500 text-yellow-400 hover:bg-yellow-500/10' : 'border-gray-500 text-gray-300 hover:bg-white/10'} transition">
-                                                        ${isOwner ? 'הסר הרשאת בעלים' : 'הפוך לבעלים'}
-                                                    </button>
-                                                    <button onclick="toggleUserBlock('${email}')" class="px-3 py-1.5 text-xs font-bold rounded-full border ${isBlocked ? 'border-green-500 text-green-400 hover:bg-green-500/10' : 'border-red-500 text-red-400 hover:bg-red-500/10'} transition">
-                                                        ${isBlocked ? 'בטל חסימה' : 'חסום יצירה'}
-                                                    </button>
-                                                ` : '<span class="text-xs text-[#b3b3b3] italic">מנהל על</span>'}
-                                            </div>
-                                        </div>
-                                    `;
-                                }).join('')}
-                            </div>
-                        `}
-                    </div>
-                </div>
-            `;
-        }
-
-        function toggleUserOwnerRole(email) {
-            let usersDB = getUsersDB();
-            if (usersDB[email]) {
-                usersDB[email].role = usersDB[email].role === 'owner' ? 'user' : 'owner';
-                saveUsersDB(usersDB);
-                alert(`הרשאות הבעלות של ${email} עודכנו!`);
-                renderView();
-            }
-        }
-
-        function toggleUserBlock(email) {
-            let usersDB = getUsersDB();
-            if (usersDB[email]) {
-                usersDB[email].blockedFromCreating = !usersDB[email].blockedFromCreating;
-                saveUsersDB(usersDB);
-                renderView();
-            }
-        }
-
-        function renderAlbumsHtml(list) {
-            return list.map(album => `
-                <div onclick="openAlbumDetail('${album.id}')" class="bg-[#181818] hover:bg-[#282828] p-4 rounded-xl transition cursor-pointer group flex flex-col gap-3 shadow-lg relative">
-                    <div class="w-full aspect-square bg-[#282828] rounded-lg overflow-hidden relative shadow-md">
-                        <img src="${album.coverUrl || 'https://placehold.co/200x200/282828/ffffff?text=Album'}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" alt="עטיפה">
-                        <button onclick="event.stopPropagation(); playAlbumSong('${album.id}', 0)" class="absolute bottom-3 left-3 w-12 h-12 rounded-full bg-[#1db954] text-black flex items-center justify-center shadow-xl opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition duration-200">
-                            <i class="fa-solid fa-play ml-0.5"></i>
-                        </button>
-                    </div>
-                    <div class="overflow-hidden">
-                        <h3 class="font-bold text-sm truncate text-white">${album.title}</h3>
-                        <p class="text-xs text-[#b3b3b3] truncate mt-0.5">${album.artist}</p>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function renderSidebarAlbums() {
-            const container = document.getElementById('sidebar-album-container');
-            if (!container) return;
-
-            if (albumsList.length === 0) {
-                container.innerHTML = '<div class="text-xs text-[#b3b3b3] px-2">אין אלבומים</div>';
-                return;
-            }
-
-            container.innerHTML = albumsList.map(album => `
-                <div onclick="openAlbumDetail('${album.id}')" class="flex items-center gap-3 px-2 py-2 rounded-lg hover:bg-white/10 cursor-pointer transition">
-                    <img src="${album.coverUrl || 'https://placehold.co/40x40/282828/ffffff?text=🎵'}" class="w-8 h-8 rounded object-cover">
-                    <div class="overflow-hidden">
-                        <div class="text-xs font-bold text-white truncate">${album.title}</div>
-                        <div class="text-[10px] text-[#b3b3b3] truncate">${album.artist}</div>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function filterAlbums(query) {
-            const grid = document.getElementById('browse-grid');
-            if (!grid) return;
-            const filtered = albumsList.filter(a => a.title.toLowerCase().includes(query.toLowerCase()) || a.artist.toLowerCase().includes(query.toLowerCase()));
-            grid.innerHTML = renderAlbumsHtml(filtered);
-        }
-
-        function openCreateAlbumModal() {
-            let usersDB = getUsersDB();
-            const userObj = usersDB[currentUserEmail] || {};
-            if (userObj.blockedFromCreating) {
-                alert('❌ גישתך ליצירת אלבומים נחסמה על ידי מנהל המערכת.');
-                return;
-            }
-
-            document.getElementById('input-album-title').value = '';
-            document.getElementById('input-album-artist').value = '';
-            document.getElementById('input-album-cover-file').value = '';
-            document.getElementById('input-album-songs').value = '';
-            document.getElementById('cover-filename-label').innerText = 'העלה קובץ תמונה';
-            document.getElementById('cover-preview-container').classList.add('hidden');
-            document.getElementById('selected-files-label').innerText = 'לחץ לבחירת קבצי שמע';
-            tempCoverBlob = null;
-            document.getElementById('create-album-modal').classList.remove('hidden');
-        }
-
-        function closeCreateAlbumModal() {
-            document.getElementById('create-album-modal').classList.add('hidden');
-        }
-
-        function handleCoverFileSelect(event) {
-            const file = event.target.files[0];
-            if (file) {
-                tempCoverBlob = file;
-                document.getElementById('cover-filename-label').innerText = file.name;
-                const previewUrl = URL.createObjectURL(file);
-                document.getElementById('cover-preview-img').src = previewUrl;
-                document.getElementById('cover-preview-container').classList.remove('hidden');
-            }
-        }
-
-        function updateFilesLabel(event) {
-            const files = event.target.files;
-            if (files && files.length > 0) {
-                document.getElementById('selected-files-label').innerText = `נבחרו ${files.length} קבצי שמע בהצלחה`;
-            }
-        }
-
-        async function handleCreateAlbumSubmit(event) {
-            event.preventDefault();
-            const title = document.getElementById('input-album-title').value.trim();
-            const artist = document.getElementById('input-album-artist').value.trim();
-            const songFilesInput = document.getElementById('input-album-songs');
-
-            if (!title || !artist || !songFilesInput.files.length) {
-                alert('נא למלא את כל השדות ולבחור לפחות שיר אחד');
-                return;
-            }
-
-            const songs = Array.from(songFilesInput.files).map(file => ({
-                name: file.name.replace(/\.[^/.]+$/, ""),
-                blob: file,
-                url: URL.createObjectURL(file)
-            }));
-
-            const newAlbum = {
-                title: title,
-                artist: artist,
-                coverBlob: tempCoverBlob,
-                songs: songs,
-                createdAt: new Date().toISOString()
-            };
-
-            try {
-                const newId = await saveAlbumToDB(newAlbum);
-                newAlbum.id = newId;
-                if (tempCoverBlob) newAlbum.coverUrl = URL.createObjectURL(tempCoverBlob);
-
-                albumsList.push(newAlbum);
-                updateGlobalStats();
-                renderView();
-                renderSidebarAlbums();
-                closeCreateAlbumModal();
-            } catch (err) {
-                console.error("שגיאה בשמירת האלבום:", err);
-                alert('שגיאה בשמירת האלבום למסד הנתונים');
-            }
-        }
-
-        async function removeAlbum(id) {
-            if (!confirm('האם אתה בטוח שברצונך למחוק אלבום זה?')) return;
-            try {
-                await deleteAlbumFromDB(id);
-                albumsList = albumsList.filter(a => String(a.id) !== String(id));
-                currentAlbumId = null;
-                updateGlobalStats();
-                renderView();
-                renderSidebarAlbums();
-            } catch (err) {
-                console.error("שגיאה במחיקת אלבום:", err);
-            }
-        }
-
-        function playAlbumSong(albumId, songIndex) {
-            const album = albumsList.find(a => String(a.id) === String(albumId)) || sharedAlbumsList.find(a => String(a.id) === String(albumId));
-            if (!album || !album.songs || !album.songs[songIndex]) return;
-
-            currentAlbumId = albumId;
-            currentSongIndex = songIndex;
-            const song = album.songs[songIndex];
-
-            if (!song.url && song.blob) {
-                song.url = URL.createObjectURL(song.blob);
-            }
-
-            if (!song.url) {
-                alert("לא ניתן לנגן שיר זה, קובץ השמע חסר.");
-                return;
-            }
-
-            audioElement.src = song.url;
-            audioElement.play().catch(e => console.log("הפעלת השמע ממתינה לאישור המשתמש"));
-
-            document.getElementById('player-title').innerText = song.name;
-            document.getElementById('player-artist').innerText = album.artist;
-            document.getElementById('player-art').src = album.coverUrl || 'https://placehold.co/120x120/282828/ffffff?text=🎵';
-
-            document.getElementById('fs-player-title').innerText = song.name;
-            document.getElementById('fs-player-artist').innerText = album.artist;
-            document.getElementById('fs-player-art').src = album.coverUrl || 'https://placehold.co/400x400/282828/ffffff?text=DiscBeat';
-
-            isPlaying = true;
-            updatePlayPauseButton();
-        }
-
-        function togglePlayPause() {
-            if (!audioElement.src) return;
-            if (audioElement.paused) {
-                audioElement.play();
-            } else {
-                audioElement.pause();
-            }
-        }
-
-        function updatePlayPauseButton() {
-            const iconHtml = isPlaying ? '<i class="fa-solid fa-pause text-sm"></i>' : '<i class="fa-solid fa-play text-sm ml-0.5"></i>';
-            const fsIconHtml = isPlaying ? '<i class="fa-solid fa-pause text-xl"></i>' : '<i class="fa-solid fa-play text-xl ml-1"></i>';
-            
-            const btn = document.getElementById('btn-play-pause');
-            const fsBtn = document.getElementById('fs-btn-play-pause');
-            if (btn) btn.innerHTML = iconHtml;
-            if (fsBtn) fsBtn.innerHTML = fsIconHtml;
-        }
-
-        function playNextSong() {
-            if (currentAlbumId === null || currentSongIndex === -1) return;
-            const album = albumsList.find(a => String(a.id) === String(currentAlbumId)) || sharedAlbumsList.find(a => String(a.id) === String(currentAlbumId));
-            if (!album || !album.songs) return;
-
-            if (currentSongIndex + 1 < album.songs.length) {
-                playAlbumSong(currentAlbumId, currentSongIndex + 1);
-            } else {
-                playAlbumSong(currentAlbumId, 0);
-            }
-        }
-
-        function playPreviousSong() {
-            if (currentAlbumId === null || currentSongIndex === -1) return;
-            const album = albumsList.find(a => String(a.id) === String(currentAlbumId)) || sharedAlbumsList.find(a => String(a.id) === String(currentAlbumId));
-            if (!album || !album.songs) return;
-
-            if (currentSongIndex - 1 >= 0) {
-                playAlbumSong(currentAlbumId, currentSongIndex - 1);
-            } else {
-                playAlbumSong(currentAlbumId, album.songs.length - 1);
-            }
-        }
-
-        function seekAudio(value) {
-            if (!isNaN(audioElement.duration)) {
-                audioElement.currentTime = (value / 100) * audioElement.duration;
-            }
-        }
-
-        function adjustVolume(value) {
-            audioElement.volume = value;
-            const icon = document.getElementById('btn-volume-icon').querySelector('i');
-            if (value == 0) {
-                icon.className = "fa-solid fa-volume-xmark";
-            } else {
-                icon.className = "fa-solid fa-volume-high";
-            }
-        }
-
-        function toggleMute() {
-            if (audioElement.volume > 0) {
-                audioElement.volume = 0;
-                document.getElementById('volume-slider').value = 0;
-                document.getElementById('btn-volume-icon').querySelector('i').className = "fa-solid fa-volume-xmark";
-            } else {
-                audioElement.volume = 1;
-                document.getElementById('volume-slider').value = 1;
-                document.getElementById('btn-volume-icon').querySelector('i').className = "fa-solid fa-volume-high";
-            }
-        }
-
-        function openFullscreenPlayer() {
-            document.getElementById('fullscreen-player').classList.remove('hidden');
-            document.getElementById('fullscreen-player').classList.add('flex');
-        }
-
-        function closeFullscreenPlayer() {
-            document.getElementById('fullscreen-player').classList.add('hidden');
-            document.getElementById('fullscreen-player').classList.remove('flex');
-        }
-
-        function formatTime(seconds) {
-            const mins = Math.floor(seconds / 60);
-            const secs = Math.floor(seconds % 60);
-            return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
-        }
-    </script>
+  </div>
+  <div class="flex flex-col items-center w-1/3 px-1">
+    <div class="flex items-center gap-5 md:gap-7 mb-1">
+      <button onclick="playPreviousSong()" class="text-[#b3b3b3] hover:text-white"><i class="fa-solid fa-backward-step"></i></button>
+      <button onclick="togglePlayPause()" id="btn-play-pause" class="w-9 h-9 md:w-10 md:h-10 rounded-full bg-white text-black flex items-center justify-center"><i class="fa-solid fa-play text-sm ml-0.5"></i></button>
+      <button onclick="playNextSong()" class="text-[#b3b3b3] hover:text-white"><i class="fa-solid fa-forward-step"></i></button>
+    </div>
+    <div class="flex items-center gap-2 w-full text-[10px] font-mono text-[#b3b3b3]" dir="ltr">
+      <span id="current-time">0:00</span>
+      <input type="range" id="progress-slider" min="0" max="100" value="0" step="0.1" class="flex-1 h-1 bg-[#4d4d4d] rounded-lg appearance-none cursor-pointer slider-thumb accent-[#1db954]" oninput="seekAudio(this.value)">
+      <span id="total-duration">0:00</span>
+    </div>
+  </div>
+  <div class="hidden sm:flex items-center justify-end gap-3 w-1/3">
+    <button onclick="toggleMute()" id="btn-volume-icon" class="text-[#b3b3b3] hover:text-white"><i class="fa-solid fa-volume-high"></i></button>
+    <input type="range" id="volume-slider" min="0" max="1" value="1" step="0.01" class="w-20 h-1 bg-[#4d4d4d] rounded-lg appearance-none cursor-pointer slider-thumb accent-white" oninput="adjustVolume(this.value)">
+    <button onclick="openFullscreenPlayer()" class="text-[#b3b3b3] hover:text-white"><i class="fa-solid fa-expand"></i></button>
+  </div>
+</footer>
+
+<!-- מסך מלא -->
+<div id="fullscreen-player" class="fixed inset-0 z-[55] hidden bg-gradient-to-b from-black via-[#383838] to-black flex-col justify-between p-6 md:p-12">
+  <div class="flex justify-end"><button onclick="closeFullscreenPlayer()" class="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center"><i class="fa-solid fa-chevron-down"></i></button></div>
+  <div class="flex-1 flex flex-col items-center justify-center max-w-xl mx-auto w-full text-center">
+    <img id="fs-player-art" src="https://placehold.co/400x400/282828/ffffff?text=DiscBeat" class="w-64 h-64 sm:w-80 sm:h-80 rounded-2xl object-cover shadow-2xl mb-8">
+    <h1 id="fs-player-title" class="text-2xl sm:text-4xl font-black truncate w-full">אין שיר נבחר</h1>
+    <p id="fs-player-artist" class="text-lg sm:text-2xl text-[#b3b3b3] truncate w-full mt-1"></p>
+    <div class="w-full flex items-center gap-3 text-xs font-mono text-[#b3b3b3] my-6" dir="ltr">
+      <span id="fs-current-time">0:00</span>
+      <input type="range" id="fs-progress-slider" min="0" max="100" value="0" step="0.1" class="flex-1 h-1.5 bg-[#4d4d4d] rounded-lg appearance-none cursor-pointer slider-thumb accent-[#1db954]" oninput="seekAudio(this.value)">
+      <span id="fs-total-duration">0:00</span>
+    </div>
+    <div class="flex items-center gap-8">
+      <button onclick="playPreviousSong()" class="text-2xl"><i class="fa-solid fa-backward-step"></i></button>
+      <button onclick="togglePlayPause()" id="fs-btn-play-pause" class="w-16 h-16 rounded-full bg-[#1db954] text-black flex items-center justify-center"><i class="fa-solid fa-play text-xl ml-1"></i></button>
+      <button onclick="playNextSong()" class="text-2xl"><i class="fa-solid fa-forward-step"></i></button>
+    </div>
+  </div>
+  <div></div>
+</div>
+
+<audio id="audio-element" preload="metadata"></audio>
+
+<!-- יצירת אלבום -->
+<div id="create-album-modal" class="fixed inset-0 bg-black/80 z-[58] hidden items-center justify-center p-4">
+  <div class="bg-[#282828] rounded-2xl p-6 max-w-lg w-full border border-white/10 animate-scaleIn overflow-y-auto max-h-[90vh]">
+    <div class="flex items-center justify-between mb-5 border-b border-white/10 pb-3">
+      <h3 class="text-xl font-bold">יצירת אלבום חדש</h3>
+      <button onclick="closeCreateAlbumModal()" class="text-[#b3b3b3] hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
+    </div>
+    <form onsubmit="handleCreateAlbumSubmit(event)" class="space-y-4">
+      <input class="inp" type="text" id="input-album-title" required placeholder="שם האלבום">
+      <input class="inp" type="text" id="input-album-artist" required placeholder="שם האמן / יוצר">
+      <label class="cursor-pointer bg-[#3e3e3e] px-4 py-3 rounded-lg text-xs font-bold flex items-center justify-center gap-2 border border-white/10">
+        <i class="fa-solid fa-image text-[#1db954]"></i><span id="cover-filename-label">העלה תמונת עטיפה (לא חובה)</span>
+        <input type="file" id="input-album-cover-file" accept="image/*" class="hidden" onchange="document.getElementById('cover-filename-label').innerText=this.files[0]?this.files[0].name:'העלה תמונת עטיפה (לא חובה)'">
+      </label>
+      <label class="cursor-pointer flex flex-col items-center border-2 border-dashed border-white/20 hover:border-[#1db954] bg-[#121212] rounded-xl p-6 text-center">
+        <i class="fa-solid fa-cloud-arrow-up text-3xl text-[#1db954] mb-2"></i>
+        <span id="selected-files-label" class="text-sm font-bold">לחץ לבחירת קבצי שמע</span>
+        <input type="file" id="input-album-songs" accept="audio/*" multiple required class="hidden" onchange="document.getElementById('selected-files-label').innerText='נבחרו '+this.files.length+' קבצים'">
+      </label>
+      <div class="flex justify-end gap-3 pt-2">
+        <button type="button" onclick="closeCreateAlbumModal()" class="px-5 py-2.5 rounded-full text-sm font-bold text-[#b3b3b3]">ביטול</button>
+        <button type="submit" id="btn-create-album" class="px-6 py-2.5 bg-[#1db954] text-black font-extrabold text-sm rounded-full disabled:opacity-50">צור אלבום</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script type="module">
+
+import { upload } from "https://esm.sh/@vercel/blob/client";
+const ADMIN_EMAIL = 'tidharhaime142014@gmail.com';
+const api = async (action, body) => {
+  const r = await fetch('/api/' + action, { method: body ? 'POST' : 'GET', headers: { 'Content-Type': 'application/json' }, body: body ? JSON.stringify(body) : undefined, credentials: 'same-origin' });
+  const d = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(d.error || 'שגיאה');
+  return d;
+};
+const $ = id => document.getElementById(id);
+const audio = $('audio-element');
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const PH = 'https://placehold.co/200x200/282828/ffffff?text=Album';
+
+let me = null, myAlbums = [], sharedAlbums = [], unsubs = [];
+let tab = 'home', viewAlbumId = null, playing = null, registerMode = false, searchQ = '';
+const allAlbums = () => [...myAlbums, ...sharedAlbums];
+const findAlbum = id => allAlbums().find(a => a.id === id);
+const isOwner = () => me && me.role === 'owner';
+
+/* ---------- התחברות ---------- */
+window.toggleAuthMode = () => {
+  registerMode = !registerMode;
+  $('auth-subtitle').innerText = registerMode ? 'צור חשבון חדש' : 'התחבר לחשבון שלך';
+  $('auth-switch-mode').innerText = registerMode ? 'כבר יש לך חשבון? התחבר' : 'אין לך חשבון? הירשם';
+  $('auth-btn-submit').innerText = registerMode ? 'הירשם' : 'התחבר';
+};
+let timer, lastSnap = '';
+const setMe = u => { me = { ...u, uid: u.id }; $('user-display-email').innerText = u.email; $('user-initial').innerText = u.email[0].toUpperCase(); };
+async function loadAlbums(force) {
+  try {
+    const d = await api('albums'), s = JSON.stringify(d);
+    if (!force && s === lastSnap) return;
+    lastSnap = s; myAlbums = d.mine; sharedAlbums = d.shared; refresh();
+  } catch (e) { /* שגיאת רשת זמנית */ }
+}
+const enter = async u => {
+  setMe(u); await loadAlbums(true);
+  $('login-screen').style.display = 'none';
+  clearInterval(timer); timer = setInterval(() => loadAlbums(), 15000);
+};
+window.handleAuthSubmit = async e => {
+  e.preventDefault();
+  const btn = $('auth-btn-submit'); btn.disabled = true;
+  try {
+    await enter(await api(registerMode ? 'register' : 'login', { email: $('login-email').value.trim(), password: $('login-password').value, remember: $('remember-me').checked }));
+  } catch (err) { alert(err.message); }
+  btn.disabled = false;
+};
+window.logoutUser = async () => {
+  try { await api('logout', {}); } catch (e) {}
+  clearInterval(timer); me = null; myAlbums = []; sharedAlbums = []; playing = null; lastSnap = '';
+  audio.pause(); audio.removeAttribute('src');
+  $('login-password').value = ''; $('login-screen').style.display = 'flex';
+};
+api('me').then(enter).catch(() => { $('login-screen').style.display = 'flex'; });
+function applyRole() {
+  ['nav-admin', 'mob-nav-admin'].forEach(id => { $(id).classList.toggle('hidden', !isOwner()); $(id).classList.toggle('flex', isOwner()); });
+  if (tab === 'admin' && !isOwner()) switchTab('home');
+}
+function refresh() {
+  applyRole();
+  $('stat-albums-count').innerText = myAlbums.length;
+  $('stat-songs-count').innerText = myAlbums.reduce((n, a) => n + (a.songs?.length || 0), 0);
+  renderSidebar(); renderView();
+}
+
+/* ---------- ניווט ותצוגה ---------- */
+window.switchTab = t => {
+  tab = t; viewAlbumId = null;
+  ['home', 'browse', 'library', 'admin'].forEach(x => {
+    const n = $('nav-' + x), m = $('mob-nav-' + x), on = x === t;
+    n.classList.toggle('bg-[#282828]', on);
+    if (x !== 'admin') { n.classList.toggle('text-white', on); n.classList.toggle('text-[#b3b3b3]', !on); m.classList.toggle('text-white', on); m.classList.toggle('text-[#b3b3b3]', !on); }
+  });
+  renderView();
+};
+window.openAlbumDetail = id => { viewAlbumId = id; renderView(); };
+
+const cardsHtml = list => list.map(a => `
+  <div onclick="openAlbumDetail('${a.id}')" class="bg-[#181818] hover:bg-[#282828] p-4 rounded-xl transition cursor-pointer group flex flex-col gap-3">
+    <div class="w-full aspect-square bg-[#282828] rounded-lg overflow-hidden relative">
+      <img src="${esc(a.coverUrl || PH)}" class="w-full h-full object-cover">
+      <button onclick="event.stopPropagation();playAlbumSong('${a.id}',0)" class="absolute bottom-3 left-3 w-12 h-12 rounded-full bg-[#1db954] text-black flex items-center justify-center shadow-xl md:opacity-0 group-hover:opacity-100 transition"><i class="fa-solid fa-play ml-0.5"></i></button>
+    </div>
+    <div class="overflow-hidden"><h3 class="font-bold text-sm truncate">${esc(a.title)}</h3><p class="text-xs text-[#b3b3b3] truncate">${esc(a.artist)}</p></div>
+  </div>`).join('');
+const GRID = 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6';
+
+function renderView() {
+  const c = $('view-container'); if (!c || !me) return;
+  if (tab === 'admin' && isOwner()) return renderAdmin(c);
+  if (viewAlbumId) {
+    const a = findAlbum(viewAlbumId);
+    if (!a) { viewAlbumId = null; return renderView(); }
+    const mine = a.ownerUid === me.uid, n = a.songs?.length || 0;
+    c.innerHTML = `<div class="py-6">
+      <div class="flex flex-col md:flex-row items-start md:items-end gap-5 mb-8 bg-gradient-to-b from-[#3a3a3a] to-transparent p-5 rounded-2xl">
+        <img src="${esc(a.coverUrl || PH)}" class="w-40 h-40 object-cover shadow-2xl rounded-xl">
+        <div class="flex-1 min-w-0">
+          <span class="text-xs font-extrabold tracking-widest text-[#1db954]">אלבום מוזיקה ${mine ? '' : '(שותף על ידי ' + esc(a.ownerEmail) + ')'}</span>
+          <h1 class="text-3xl md:text-5xl font-black mt-1 mb-2 break-words">${esc(a.title)}</h1>
+          <p class="text-sm text-[#b3b3b3] font-semibold">${esc(a.artist)} • ${n} שירים</p>
+        </div>
+        <div class="flex items-center gap-3">
+          ${n ? `<button onclick="playAlbumSong('${a.id}',0)" class="w-14 h-14 rounded-full bg-[#1db954] text-black flex items-center justify-center text-xl"><i class="fa-solid fa-play ml-0.5"></i></button>` : ''}
+          ${mine ? `<button onclick="shareAlbum('${a.id}')" class="p-3.5 bg-blue-600/20 text-blue-400 rounded-full" title="שתף"><i class="fa-solid fa-share-nodes"></i></button>
+          <button onclick="removeAlbum('${a.id}')" class="p-3.5 bg-red-600/20 text-red-400 rounded-full" title="מחק"><i class="fa-solid fa-trash-can"></i></button>` : ''}
+        </div></div>
+      ${mine && a.sharedWith?.length ? `<p class="text-xs text-[#b3b3b3] mb-4">משותף עם: ${a.sharedWith.map(esc).join(', ')}</p>` : ''}
+      <div class="space-y-1">${n ? a.songs.map((s, i) => `
+        <div onclick="playAlbumSong('${a.id}',${i})" class="flex items-center justify-between p-3 rounded-lg hover:bg-white/10 cursor-pointer">
+          <div class="flex items-center gap-4 min-w-0"><span class="w-6 text-center text-sm text-[#b3b3b3]">${i + 1}</span>
+          <div class="min-w-0"><div class="text-sm font-bold truncate">${esc(s.name)}</div><div class="text-xs text-[#b3b3b3]">${esc(a.artist)}</div></div></div>
+          <i class="fa-solid fa-play text-sm"></i></div>`).join('') : '<p class="text-[#b3b3b3] text-sm">אין שירים באלבום זה.</p>'}</div></div>`;
+    return;
+  }
+  if (tab === 'browse' || tab === 'library') {
+    c.innerHTML = `<div class="py-8"><h1 class="text-3xl font-black mb-6">${tab === 'browse' ? 'חיפוש אלבומים' : 'הספרייה שלך'}</h1>
+      <input id="search-input" value="${esc(searchQ)}" oninput="filterAlbums(this.value)" placeholder="חפש לפי שם אלבום או אמן..." class="inp md:w-96 mb-8" style="background:#2a2a2a">
+      <div id="browse-grid" class="${GRID}"></div></div>`;
+    filterAlbums(searchQ); return;
+  }
+  c.innerHTML = `<div class="py-6 space-y-8">
+    <div><h2 class="text-2xl font-black mb-4">האלבומים שלך ב-DiscBeat</h2>
+    ${myAlbums.length ? `<div class="${GRID}">${cardsHtml(myAlbums)}</div>` : '<p class="text-sm text-[#b3b3b3]">אין לך עדיין אלבומים. לחץ על "צור אלבום חדש" כדי להתחיל.</p>'}</div>
+    ${sharedAlbums.length ? `<div><h2 class="text-2xl font-black mb-4 text-blue-400"><i class="fa-solid fa-share-nodes ml-2"></i>אלבומים ששותפו איתי</h2><div class="${GRID}">${cardsHtml(sharedAlbums)}</div></div>` : ''}</div>`;
+}
+window.filterAlbums = q => {
+  searchQ = q; const g = $('browse-grid'); if (!g) return;
+  const s = q.toLowerCase();
+  g.innerHTML = cardsHtml(allAlbums().filter(a => (a.title + ' ' + a.artist).toLowerCase().includes(s)));
+};
+function renderSidebar() {
+  $('sidebar-album-container').innerHTML = myAlbums.length ? myAlbums.map(a => `
+    <div onclick="openAlbumDetail('${a.id}')" class="flex items-center gap-3 px-2 py-2 rounded-lg hover:bg-white/10 cursor-pointer">
+      <img src="${esc(a.coverUrl || PH)}" class="w-8 h-8 rounded object-cover">
+      <div class="overflow-hidden"><div class="text-xs font-bold truncate">${esc(a.title)}</div><div class="text-[10px] text-[#b3b3b3] truncate">${esc(a.artist)}</div></div></div>`).join('')
+    : '<div class="text-xs text-[#b3b3b3] px-2">אין אלבומים</div>';
+}
+
+/* ---------- פאנל ניהול ---------- */
+async function renderAdmin(c) {
+  c.innerHTML = '<p class="py-8 text-[#b3b3b3]">טוען משתמשים...</p>';
+  try {
+    const rows = await api('users');
+    if (tab !== 'admin') return;
+    c.innerHTML = `<div class="py-8 space-y-4">
+      <h1 class="text-3xl font-black"><i class="fa-solid fa-user-shield text-amber-400 ml-2"></i>פאנל ניהול</h1>
+      ${rows.map(u => { const d = { id: u.id }, main = u.email === ADMIN_EMAIL, self = d.id === me.uid, own = u.role === 'owner', bl = u.blockedFromCreating;
+        return `<div class="flex flex-col sm:flex-row sm:items-center justify-between p-4 bg-[#222] rounded-lg gap-3">
+          <div class="min-w-0"><div class="font-bold text-sm break-all">${esc(u.email)} ${main ? '<span class="text-amber-400 text-xs">(מנהל ראשי)</span>' : own ? '<span class="text-yellow-400 text-xs">(בעלים)</span>' : ''}</div>
+          <div class="text-xs text-[#b3b3b3]">יצירת אלבומים: ${bl ? '<b class="text-red-400">חסום</b>' : '<b class="text-green-400">מורשה</b>'}</div></div>
+          ${main || self ? '<span class="text-xs text-[#b3b3b3] italic">לא ניתן לשינוי</span>' : `<div class="flex gap-2">
+            <button onclick="adminUpdate('${d.id}',{role:'${own ? 'user' : 'owner'}'})" class="px-3 py-1.5 text-xs font-bold rounded-full border border-yellow-500 text-yellow-400">${own ? 'הסר בעלות' : 'הפוך לבעלים'}</button>
+            <button onclick="adminUpdate('${d.id}',{blockedFromCreating:${!bl}})" class="px-3 py-1.5 text-xs font-bold rounded-full border ${bl ? 'border-green-500 text-green-400' : 'border-red-500 text-red-400'}">${bl ? 'בטל חסימה' : 'חסום יצירה'}</button></div>`}
+        </div>`; }).join('')}</div>`;
+  } catch (err) { c.innerHTML = `<p class="py-8 text-red-400">שגיאה: ${esc(err.message)}</p>`; }
+}
+window.adminUpdate = async (uid, data) => {
+  try { await api('updateUser', { id: uid, ...data }); renderView(); } catch (err) { alert('שגיאה: ' + err.message); }
+};
+
+/* ---------- אלבומים ---------- */
+window.openCreateAlbumModal = () => {
+  if (me?.blockedFromCreating) return alert('❌ גישתך ליצירת אלבומים נחסמה על ידי מנהל המערכת.');
+  ['input-album-title', 'input-album-artist', 'input-album-cover-file', 'input-album-songs'].forEach(i => $(i).value = '');
+  $('cover-filename-label').innerText = 'העלה תמונת עטיפה (לא חובה)';
+  $('selected-files-label').innerText = 'לחץ לבחירת קבצי שמע';
+  $('create-album-modal').classList.replace('hidden', 'flex');
+};
+window.closeCreateAlbumModal = () => $('create-album-modal').classList.replace('flex', 'hidden');
+
+const safe = n => n.replace(/[^\w.\-]/g, '_');
+const up = (f, cb) => upload(`albums/${me.uid}/${safe(f.name)}`, f, { access: 'public', handleUploadUrl: '/api/upload', onUploadProgress: p => cb && cb(Math.round(p.percentage)) }).then(b => b.url);
+window.handleCreateAlbumSubmit = async e => {
+  e.preventDefault();
+  const title = $('input-album-title').value.trim(), artist = $('input-album-artist').value.trim();
+  const files = [...$('input-album-songs').files], cover = $('input-album-cover-file').files[0];
+  if (!title || !artist || !files.length) return alert('נא למלא את כל השדות ולבחור לפחות שיר אחד');
+  const btn = $('btn-create-album'); btn.disabled = true;
+  try {
+    let coverUrl = '';
+    if (cover) { btn.innerText = 'מעלה עטיפה...'; coverUrl = await up(cover); }
+    const songs = [];
+    for (let i = 0; i < files.length; i++) {
+      const url = await up(files[i], p => btn.innerText = `שיר ${i + 1}/${files.length} (${p}%)`);
+      songs.push({ name: files[i].name.replace(/\.[^/.]+$/, ''), url });
+    }
+    await api('createAlbum', { title, artist, coverUrl, songs });
+    closeCreateAlbumModal(); await loadAlbums(true);
+  } catch (err) { console.error(err); alert('שגיאה בשמירת האלבום: ' + err.message); }
+  btn.disabled = false; btn.innerText = 'צור אלבום';
+};
+window.removeAlbum = async id => {
+  const a = findAlbum(id); if (!a || a.ownerUid !== me.uid || !confirm('האם אתה בטוח שברצונך למחוק אלבום זה?')) return;
+  try {
+    if (playing?.albumId === id) { audio.pause(); audio.removeAttribute('src'); playing = null; }
+    await api('deleteAlbum', { id }); viewAlbumId = null; await loadAlbums(true);
+  } catch (err) { alert('שגיאה במחיקה: ' + err.message); }
+};
+window.shareAlbum = async id => {
+  const a = findAlbum(id); if (!a) return;
+  const t = (prompt(`הכנס את האימייל של המשתמש שאיתו תרצה לשתף את "${a.title}":`) || '').trim().toLowerCase();
+  if (!t) return;
+  try { await api('share', { id, email: t }); await loadAlbums(true); alert(`✅ האלבום שותף עם ${t}. הוא יופיע אצלו אחרי שיתחבר.`); }
+  catch (err) { alert('שגיאה בשיתוף: ' + err.message); }
+};
+
+/* ---------- נגן ---------- */
+window.playAlbumSong = (albumId, idx) => {
+  const a = findAlbum(albumId), s = a?.songs?.[idx]; if (!s) return;
+  playing = { albumId, idx };
+  audio.src = s.url; audio.play().catch(() => {});
+  const art = a.coverUrl || 'https://placehold.co/120x120/282828/ffffff?text=🎵';
+  $('player-title').innerText = $('fs-player-title').innerText = s.name;
+  $('player-artist').innerText = $('fs-player-artist').innerText = a.artist;
+  $('player-art').src = $('fs-player-art').src = art;
+  if ('mediaSession' in navigator) navigator.mediaSession.metadata = new MediaMetadata({ title: s.name, artist: a.artist, artwork: [{ src: art }] });
+};
+window.togglePlayPause = () => { if (audio.src) audio.paused ? audio.play() : audio.pause(); };
+const step = d => {
+  const a = playing && findAlbum(playing.albumId); if (!a?.songs?.length) return;
+  playAlbumSong(playing.albumId, (playing.idx + d + a.songs.length) % a.songs.length);
+};
+window.playNextSong = () => step(1);
+window.playPreviousSong = () => step(-1);
+window.seekAudio = v => { if (isFinite(audio.duration)) audio.currentTime = v / 100 * audio.duration; };
+window.adjustVolume = v => { audio.volume = v; $('btn-volume-icon').innerHTML = `<i class="fa-solid fa-volume-${+v ? 'high' : 'xmark'}"></i>`; };
+window.toggleMute = () => { const v = audio.volume > 0 ? 0 : 1; $('volume-slider').value = v; adjustVolume(v); };
+window.openFullscreenPlayer = () => $('fullscreen-player').classList.replace('hidden', 'flex');
+window.closeFullscreenPlayer = () => $('fullscreen-player').classList.replace('flex', 'hidden');
+const fmt = s => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
+audio.addEventListener('timeupdate', () => {
+  if (!isFinite(audio.duration)) return;
+  const p = audio.currentTime / audio.duration * 100;
+  $('progress-slider').value = $('fs-progress-slider').value = p;
+  $('current-time').innerText = $('fs-current-time').innerText = fmt(audio.currentTime);
+  $('total-duration').innerText = $('fs-total-duration').innerText = fmt(audio.duration);
+});
+audio.addEventListener('ended', () => playNextSong());
+const setIcon = on => {
+  $('btn-play-pause').innerHTML = `<i class="fa-solid fa-${on ? 'pause' : 'play'} text-sm ${on ? '' : 'ml-0.5'}"></i>`;
+  $('fs-btn-play-pause').innerHTML = `<i class="fa-solid fa-${on ? 'pause' : 'play'} text-xl ${on ? '' : 'ml-1'}"></i>`;
+};
+audio.addEventListener('play', () => setIcon(true));
+audio.addEventListener('pause', () => setIcon(false));
+</script>
 </body>
 </html>
