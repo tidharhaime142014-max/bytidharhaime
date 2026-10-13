@@ -11,6 +11,10 @@
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
     <style>
         body {
             font-family: 'Heebo', sans-serif;
@@ -92,7 +96,7 @@
                         <i class="fa-solid fa-plus text-sm"></i> צור אלבום חדש
                     </button>
 
-                    <div class="px-2 pt-2 text-[11px] font-bold uppercase tracking-wider text-[#b3b3b3]">האלבומים במערכת</div>
+                    <div class="px-2 pt-2 text-[11px] font-bold uppercase tracking-wider text-[#b3b3b3]">האלבומים בענן</div>
                     <div id="sidebar-album-container" class="max-h-48 overflow-y-auto space-y-1 pr-1"></div>
                 </div>
             </div>
@@ -262,27 +266,14 @@
                 </div>
 
                 <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider text-[#b3b3b3] mb-1.5">תמונת עטיפה</label>
-                    <div class="flex flex-col gap-2">
-                        <label class="cursor-pointer bg-[#3e3e3e] hover:bg-[#4e4e4e] px-4 py-3 rounded-lg text-xs font-bold flex items-center justify-center gap-2 text-white border border-white/10">
-                            <i class="fa-solid fa-image text-sm text-[#1db954]"></i>
-                            <span id="cover-filename-label">העלה קובץ תמונה</span>
-                            <input type="file" id="input-album-cover-file" accept="image/*" class="hidden" onchange="handleCoverFileSelect(event)">
-                        </label>
-                        <div id="cover-preview-container" class="hidden mt-2 flex items-center gap-3 bg-[#121212] p-2 rounded-lg">
-                            <img id="cover-preview-img" src="" alt="תצוגה מקדימה" class="w-12 h-12 object-cover rounded">
-                            <span class="text-xs text-[#b3b3b3]">תצוגה מקדימה לעטיפה</span>
-                        </div>
-                    </div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-[#b3b3b3] mb-1.5">קישור עטיפת אלבום (תמונה)</label>
+                    <input type="url" id="input-album-cover-url" placeholder="https://example.com/image.jpg" class="w-full px-4 py-2.5 bg-[#121212] rounded-lg text-sm text-white focus:outline-none border border-white/10 focus:border-[#1db954]">
                 </div>
 
                 <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider text-[#b3b3b3] mb-1.5">קבצי שמע</label>
-                    <label class="cursor-pointer flex flex-col items-center justify-center border-2 border-dashed border-white/20 hover:border-[#1db954] bg-[#121212] rounded-xl p-6 transition group text-center">
-                        <i class="fa-solid fa-cloud-arrow-up text-3xl text-[#1db954] mb-2 group-hover:scale-110 transition"></i>
-                        <span id="selected-files-label" class="text-sm font-bold text-white">לחץ לבחירת קבצי שמע</span>
-                        <input type="file" id="input-album-songs" accept="audio/*" multiple required class="hidden" onchange="updateFilesLabel(event)">
-                    </label>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-[#b3b3b3] mb-1.5">קישורי שירים (כתובות אינטרנט MP3)</label>
+                    <textarea id="input-album-songs-urls" required rows="3" placeholder="הכנס קישורי שמע (MP3), כל קישור בשורה חדשה..." class="w-full px-4 py-2.5 bg-[#121212] rounded-lg text-sm text-white focus:outline-none border border-white/10 focus:border-[#1db954] resize-none"></textarea>
+                    <p class="text-[11px] text-[#b3b3b3] mt-1">טיפ: הכנס קישורי שמע ישירים (או כתובות מ-GitHub / ענן) כדי שיתנגנו בכל המכשירים.</p>
                 </div>
 
                 <div class="flex justify-end gap-3 pt-3">
@@ -294,104 +285,46 @@
     </div>
 
     <script>
-        let db = null;
-        const STORE_NAME = 'albums';
+        // הגדרות Firebase של הפרויקט שלך
+        const firebaseConfig = {
+            apiKey: "AIzaSyAJJ-Vo49iCYRoyO4tevyTi_m69S1NrO2A",
+            authDomain: "discbeat-fc6c6.firebaseapp.com",
+            projectId: "discbeat-fc6c6",
+            storageBucket: "discbeat-fc6c6.firebasestorage.app",
+            messagingSenderId: "680972177044",
+            appId: "1:680972177044:web:3351eaa0ee57867e69ae81",
+            measurementId: "G-1WTEPQZECT"
+        };
+
+        // אתחול Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
         let albumsList = [];
         let activeTab = 'home';
         let currentAlbumId = null;
         let currentSongIndex = -1;
         let isPlaying = false;
-        let tempCoverBlob = null;
 
         const audioElement = document.getElementById('audio-element');
 
-        // מנגנון סנכרון בזמן אמת בין לשוניות וחלונות פתוחים בדפדפן
-        const syncChannel = new BroadcastChannel('discbeat_sync_channel');
-        syncChannel.onmessage = (event) => {
-            if (event.data === 'update_albums') {
-                loadAlbumsFromDB().then(() => {
-                    updateGlobalStats();
-                    renderView();
-                    renderSidebarAlbums();
+        // האזנה בזמן אמת לשינויים מכל מכשיר בענן
+        function initRealtimeSync() {
+            db.collection('albums').onSnapshot((snapshot) => {
+                albumsList = [];
+                snapshot.forEach((doc) => {
+                    albumsList.push({ id: doc.id, ...doc.data() });
                 });
-            }
-        };
-
-        function notifyAllClients() {
-            syncChannel.postMessage('update_albums');
-        }
-
-        function initDB() {
-            return new Promise((resolve, reject) => {
-                const request = indexedDB.open('DiscBeat_SharedGlobalDB', 1);
-                request.onerror = (e) => reject(e.target.error);
-                request.onsuccess = (e) => {
-                    db = e.target.result;
-                    resolve(db);
-                };
-                request.onupgradeneeded = (e) => {
-                    const database = e.target.result;
-                    if (!database.objectStoreNames.contains(STORE_NAME)) {
-                        database.createObjectStore(STORE_NAME, { keyPath: 'id', autoIncrement: true });
-                    }
-                };
+                updateGlobalStats();
+                renderView();
+                renderSidebarAlbums();
+            }, (error) => {
+                console.error("שגיאה בסנכרון הענן:", error);
             });
         }
 
-        async function loadAlbumsFromDB() {
-            return new Promise((resolve, reject) => {
-                const transaction = db.transaction([STORE_NAME], 'readonly');
-                const store = transaction.objectStore(STORE_NAME);
-                const request = store.getAll();
-                request.onsuccess = () => {
-                    albumsList = request.result || [];
-                    
-                    albumsList.forEach(album => {
-                        if (album.coverBlob) {
-                            album.coverUrl = URL.createObjectURL(album.coverBlob);
-                        }
-                        if (album.songs) {
-                            album.songs.forEach(song => {
-                                if (song.blob) {
-                                    song.url = URL.createObjectURL(song.blob);
-                                }
-                            });
-                        }
-                    });
-
-                    resolve();
-                };
-                request.onerror = (e) => reject(e);
-            });
-        }
-
-        async function saveAlbumToDB(albumObj) {
-            return new Promise((resolve, reject) => {
-                const transaction = db.transaction([STORE_NAME], 'readwrite');
-                const store = transaction.objectStore(STORE_NAME);
-                const request = store.add(albumObj);
-                request.onsuccess = () => resolve(request.result);
-                request.onerror = (e) => reject(e);
-            });
-        }
-
-        async function deleteAlbumFromDB(id) {
-            return new Promise((resolve, reject) => {
-                const transaction = db.transaction([STORE_NAME], 'readwrite');
-                const store = transaction.objectStore(STORE_NAME);
-                const request = store.delete(id);
-                request.onsuccess = () => resolve();
-                request.onerror = (e) => reject(e);
-            });
-        }
-
-        window.addEventListener('DOMContentLoaded', async () => {
-            await initDB();
-            await loadAlbumsFromDB();
-
-            updateGlobalStats();
-            renderView();
-            renderSidebarAlbums();
+        window.addEventListener('DOMContentLoaded', () => {
+            initRealtimeSync();
 
             audioElement.addEventListener('timeupdate', () => {
                 if (!isNaN(audioElement.duration)) {
@@ -473,7 +406,7 @@
                         <div class="flex flex-col md:flex-row items-start md:items-end gap-6 mb-8 bg-gradient-to-b from-[#3a3a3a] to-transparent p-6 rounded-2xl shadow-xl">
                             <img src="${album.coverUrl || 'https://placehold.co/200x200/282828/ffffff?text=Album'}" class="w-44 h-44 object-cover shadow-2xl rounded-xl" alt="עטיפה">
                             <div class="flex-1">
-                                <span class="text-xs uppercase font-extrabold tracking-widest text-[#1db954]">אלבום מוזיקה</span>
+                                <span class="text-xs uppercase font-extrabold tracking-widest text-[#1db954]">אלבום ענן</span>
                                 <h1 class="text-3xl md:text-5xl font-black mt-1 mb-2">${album.title}</h1>
                                 <p class="text-sm text-[#b3b3b3] font-semibold">${album.artist} • ${album.songs ? album.songs.length : 0} שירים</p>
                             </div>
@@ -483,7 +416,7 @@
                                         <i class="fa-solid fa-play ml-0.5"></i>
                                     </button>
                                 ` : ''}
-                                <button onclick="removeAlbum(${album.id})" class="p-3.5 bg-red-600/20 hover:bg-red-600 text-red-400 hover:text-white rounded-full transition text-sm" title="מחק אלבום">
+                                <button onclick="removeAlbum('${album.id}')" class="p-3.5 bg-red-600/20 hover:bg-red-600 text-red-400 hover:text-white rounded-full transition text-sm" title="מחק אלבום">
                                     <i class="fa-solid fa-trash-can"></i>
                                 </button>
                             </div>
@@ -524,9 +457,9 @@
             container.innerHTML = `
                 <div class="py-6 space-y-8">
                     <div>
-                        <h2 class="text-2xl font-black tracking-tight mb-4">האלבומים ב-DiscBeat</h2>
+                        <h2 class="text-2xl font-black tracking-tight mb-4">האלבומים ב-DiscBeat (ענן)</h2>
                         ${albumsList.length === 0 ? `
-                            <p class="text-sm text-[#b3b3b3]">אין עדיין אלבומים במערכת. לחץ על "צור אלבום חדש" כדי להתחיל.</p>
+                            <p class="text-sm text-[#b3b3b3]">אין עדיין אלבומים בענן. לחץ על "צור אלבום חדש" כדי להתחיל.</p>
                         ` : `
                             <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
                                 ${renderAlbumsHtml(albumsList)}
@@ -559,7 +492,7 @@
             if (!container) return;
 
             if (albumsList.length === 0) {
-                container.innerHTML = '<div class="text-xs text-[#b3b3b3] px-2">אין אלבומים</div>';
+                container.innerHTML = '<div class="text-xs text-[#b3b3b3] px-2">אין אלבומים בענן</div>';
                 return;
             }
 
@@ -584,12 +517,8 @@
         function openCreateAlbumModal() {
             document.getElementById('input-album-title').value = '';
             document.getElementById('input-album-artist').value = '';
-            document.getElementById('input-album-cover-file').value = '';
-            document.getElementById('input-album-songs').value = '';
-            document.getElementById('cover-filename-label').innerText = 'העלה קובץ תמונה';
-            document.getElementById('cover-preview-container').classList.add('hidden');
-            document.getElementById('selected-files-label').innerText = 'לחץ לבחירת קבצי שמע';
-            tempCoverBlob = null;
+            document.getElementById('input-album-cover-url').value = '';
+            document.getElementById('input-album-songs-urls').value = '';
             document.getElementById('create-album-modal').classList.remove('hidden');
         }
 
@@ -597,80 +526,50 @@
             document.getElementById('create-album-modal').classList.add('hidden');
         }
 
-        function handleCoverFileSelect(event) {
-            const file = event.target.files[0];
-            if (file) {
-                tempCoverBlob = file;
-                document.getElementById('cover-filename-label').innerText = file.name;
-                const previewUrl = URL.createObjectURL(file);
-                document.getElementById('cover-preview-img').src = previewUrl;
-                document.getElementById('cover-preview-container').classList.remove('hidden');
-            }
-        }
-
-        function updateFilesLabel(event) {
-            const files = event.target.files;
-            if (files && files.length > 0) {
-                document.getElementById('selected-files-label').innerText = `נבחרו ${files.length} קבצי שמע בהצלחה`;
-            }
-        }
-
         async function handleCreateAlbumSubmit(event) {
             event.preventDefault();
             const title = document.getElementById('input-album-title').value.trim();
             const artist = document.getElementById('input-album-artist').value.trim();
-            const songFilesInput = document.getElementById('input-album-songs');
+            const coverUrl = document.getElementById('input-album-cover-url').value.trim();
+            const songsText = document.getElementById('input-album-songs-urls').value.trim();
 
-            if (!title || !artist || !songFilesInput.files.length) {
-                alert('נא למלא את כל השדות ולבחור לפחות שיר אחד');
+            if (!title || !artist || !songsText) {
+                alert('נא למלא את כל השדות הנדרשים');
                 return;
             }
 
-            const songs = Array.from(songFilesInput.files).map(file => ({
-                name: file.name.replace(/\.[^/.]+$/, ""),
-                blob: file,
-                url: URL.createObjectURL(file)
-            }));
+            const lines = songsText.split('\n').filter(l => l.trim() !== '');
+            const songs = lines.map((line, idx) => {
+                const parts = line.split('|');
+                const songName = parts[0] ? parts[0].trim() : `שיר ${idx + 1}`;
+                const songUrl = parts[1] ? parts[1].trim() : parts[0].trim();
+                return { name: songName, url: songUrl };
+            });
 
             const newAlbum = {
                 title: title,
                 artist: artist,
-                coverBlob: tempCoverBlob,
+                coverUrl: coverUrl || 'https://placehold.co/400x400/282828/ffffff?text=DiscBeat',
                 songs: songs,
                 createdAt: new Date().toISOString()
             };
 
             try {
-                const newId = await saveAlbumToDB(newAlbum);
-                newAlbum.id = newId;
-                if (tempCoverBlob) newAlbum.coverUrl = URL.createObjectURL(tempCoverBlob);
-
-                albumsList.push(newAlbum);
-                updateGlobalStats();
-                renderView();
-                renderSidebarAlbums();
+                await db.collection('albums').add(newAlbum);
                 closeCreateAlbumModal();
-
-                notifyAllClients();
             } catch (err) {
-                console.error("שגיאה בשמירת האלבום:", err);
-                alert('שגיאה בשמירת האלבום למסד הנתונים');
+                console.error("שגיאה בהעלאה לענן:", err);
+                alert('שגיאה בשמירת האלבום לענן');
             }
         }
 
         async function removeAlbum(id) {
-            if (!confirm('האם אתה בטוח שברצונך למחוק אלבום זה?')) return;
+            if (!confirm('האם אתה בטוח שברצונך למחוק אלבום זה מהענן?')) return;
             try {
-                await deleteAlbumFromDB(id);
-                albumsList = albumsList.filter(a => String(a.id) !== String(id));
+                await db.collection('albums').doc(id).delete();
                 currentAlbumId = null;
-                updateGlobalStats();
-                renderView();
-                renderSidebarAlbums();
-
-                notifyAllClients();
             } catch (err) {
-                console.error("שגיאה במחיקת אלבום:", err);
+                console.error("שגיאה במחיקת אלבום מהענן:", err);
             }
         }
 
@@ -682,12 +581,8 @@
             currentSongIndex = songIndex;
             const song = album.songs[songIndex];
 
-            if (!song.url && song.blob) {
-                song.url = URL.createObjectURL(song.blob);
-            }
-
             if (!song.url) {
-                alert("לא ניתן לנגן שיר זה, קובץ השמע חסר.");
+                alert("כתובת השמע חסרה.");
                 return;
             }
 
