@@ -1,0 +1,10 @@
+{
+  "name": "discbeat",
+  "private": true,
+  "dependencies": {
+    "@neondatabase/serverless": "latest",
+    "@vercel/blob": "latest",
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.2"
+  }
+}
