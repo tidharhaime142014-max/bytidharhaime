@@ -1,37 +1,44 @@
 export default async function handler(req, res) {
+    // מאפשר קבלת בקשות רק מסוג POST
     if (req.method !== 'POST') {
         return res.status(405).json({ error: 'Method not allowed' });
     }
 
-    // קריאת המפתח החינמי של גרוק מתוך ורסל
     const apiKey = process.env.GROQ_API_KEY;
 
+    // הגנה מקדימה למקרה שהמפתח לא הוזרק כראוי
     if (!apiKey) {
-        return res.status(500).json({ error: 'מפתח ה-API של Groq לא הוגדר ב-Vercel או שלא בוצע Redeploy.' });
+        return res.status(500).json({ error: 'משתנה הסביבה GROQ_API_KEY לא הוגדר ב-Vercel.' });
     }
 
     try {
-        const response = await fetch("https://groq.com", {
+        const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${apiKey.trim()}` // .trim() מונע בעיות של רווחים שהועתקו בטעות
+                "Authorization": `Bearer ${apiKey.trim()}`
             },
             body: JSON.stringify({
-                model: "llama-3.3-70b-versatile", // מודל חזק, חינמי ומהיר
+                model: "llama-3.3-70b-versatile",
                 messages: req.body.messages
             })
         });
 
         const data = await response.json();
 
+        // אם גרוק מחזירים קוד שגיאה (כמו מפתח לא תקין או הגבלת קצב) - נחזיר את הסיבה המדויקת
         if (!response.ok) {
-            // אם שרתי גרוק מחזירים שגיאה (למשל מפתח שגוי), נציג אותה ישירות למסך
-            return res.status(response.status).json({ error: data.error?.message || "שגיאה פנימית של Groq" });
+            return res.status(response.status).json({ 
+                choices: { message: { content: `שגיאה ישירה משרתי Groq: ${data.error?.message || JSON.stringify(data.error)}` } } 
+            });
         }
 
         return res.status(200).json(data);
+
     } catch (error) {
-        return res.status(500).json({ error: 'נכשלה הפנייה הפיזית לשרת. ודא שהחיבור תקין.' });
+        // מחזיר את הודעת השגיאה הטכנית המלאה כדי שלא תצטרך לנחש
+        return res.status(200).json({ 
+            choices: { message: { content: `נכשלה הפנייה הפיזית לשרת של גרוק. סיבת שגיאה: ${error.message}` } } 
+        });
     }
 }
