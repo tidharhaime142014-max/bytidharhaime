@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ChatGPT - Figma Styled UI</title>
+    <title>ChatGPT - Live Client UI</title>
     <style>
         * {
             box-sizing: border-box;
@@ -13,14 +13,13 @@
         }
 
         body {
-            background-color: #343541; /* צבע הרקע הרשמי מהעיצוב */
+            background-color: #343541;
             color: #ECECF1;
             display: flex;
             flex-direction: column;
             height: 100vh;
         }
 
-        /* אזור ה-Header העליון */
         header {
             background-color: #202123;
             padding: 15px;
@@ -30,7 +29,6 @@
             border-bottom: 1px solid #4d4d4d;
         }
 
-        /* אזור זרימת ההודעות */
         #chat-container {
             flex: 1;
             overflow-y: auto;
@@ -38,7 +36,6 @@
             flex-direction: column;
         }
 
-        /* שורת הודעה כללית (רוחב מלא) */
         .message-row {
             width: 100%;
             padding: 24px 20px;
@@ -47,17 +44,9 @@
             border-bottom: 1px solid #2a2b32;
         }
 
-        /* שורת משתמש מקבלת רקע כהה יותר לפי הפיגמה */
-        .user-row {
-            background-color: #343541;
-        }
+        .user-row { background-color: #343541; }
+        .bot-row { background-color: #444654; }
 
-        /* שורת בוט מקבלת רקע מופרד */
-        .bot-row {
-            background-color: #444654;
-        }
-
-        /* פנים ההודעה - מוגבל במרכז הדף לקריאות */
         .message-content {
             width: 100%;
             max-width: 768px;
@@ -65,7 +54,7 @@
             line-height: 1.6;
             word-wrap: break-word;
             white-space: pre-wrap;
-            color: #ECECF1; /* מבטיח שהטקסט תמיד ייראה בלבן-אפרפר */
+            color: #ECECF1;
         }
 
         .error-message {
@@ -79,7 +68,6 @@
             text-align: center;
         }
 
-        /* אזור הקלט התחתון */
         #input-container {
             background-image: linear-gradient(180deg, rgba(52,53,65,0), #343541 50%);
             padding: 20px 20px 30px 20px;
@@ -92,7 +80,7 @@
         .input-wrapper {
             background-color: #40414F;
             border: 1px solid #303139;
-            border-radius: 12px; /* סגנון מרובע מעוגל קלות מהפיגמה */
+            border-radius: 12px;
             width: 100%;
             max-width: 768px;
             display: flex;
@@ -101,12 +89,11 @@
             box-shadow: 0 0 15px rgba(0,0,0,0.1);
         }
 
-        /* תיקון קריטי: הגדרת צבע הטקסט בתוך התיבה */
         textarea {
             flex: 1;
             background: none;
             border: none;
-            color: #FFFFFF; /* טקסט לבן ברור בזמן הקלדה */
+            color: #FFFFFF;
             resize: none;
             height: 24px;
             max-height: 200px;
@@ -115,9 +102,7 @@
             font-family: inherit;
         }
 
-        textarea::placeholder {
-            color: #8E8EA0; /* צבע פלייסהולדר ברור */
-        }
+        textarea::placeholder { color: #8E8EA0; }
 
         button {
             background-color: transparent;
@@ -135,11 +120,10 @@
         }
 
         button.active {
-            background-color: #19C37D; /* הצבע הירוק המקורי של OpenAI */
+            background-color: #19C37D;
             color: white;
         }
 
-        /* אנימציית טעינה */
         .typing-indicator {
             display: flex;
             gap: 5px;
@@ -165,18 +149,17 @@
 </head>
 <body>
 
-    <header>ChatGPT - UI v3</header>
+    <header>ChatGPT - Live UI</header>
 
     <div id="chat-container">
-        <!-- הודעת פתיחה בשורת בוט ייעודית -->
         <div class="message-row bot-row">
-            <div class="message-content">שלום! ממשק ה-Figma עודכן בהצלחה והטקסט תוקן. במה אני יכול לעזור לך היום?</div>
+            <div class="message-content">הצ'אט אותחל מחדש במצב ישיר חסין תקלות! במה אני יכול לעזור לך היום?</div>
         </div>
     </div>
 
     <div id="input-container">
         <div class="input-wrapper">
-            <textarea id="user-input" placeholder="שלח הודעה ל-ChatGPT..." rows="1"></textarea>
+            <textarea id="user-input" placeholder="שלח הודעה..." rows="1"></textarea>
             <button id="send-btn" disabled>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://w3.org">
                     <path d="M12 19V5M12 5L5 12M12 5L19 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -186,18 +169,20 @@
     </div>
 
     <script>
+        // 🔑 הדבק כאן את מפתח ה-Groq החינמי שלך שמתחיל ב-gsk_
+        const GROQ_API_KEY = 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; 
+
         const textarea = document.getElementById('user-input');
         const sendBtn = document.getElementById('send-btn');
         const chatContainer = document.getElementById('chat-container');
 
         let conversationHistory = [
-            { role: "system", content: "You are ChatGPT, a helpful AI assistant. Respond in the language used by the user." }
+            { role: "system", content: "You are ChatGPT, a helpful AI assistant. Respond in Hebrew." }
         ];
 
         textarea.addEventListener('input', function() {
             this.style.height = '24px';
             this.style.height = this.scrollHeight - 20 + 'px';
-            
             if (this.value.trim() !== '') {
                 sendBtn.removeAttribute('disabled');
                 sendBtn.classList.add('active');
@@ -211,7 +196,11 @@
             const text = textarea.value.trim();
             if (!text) return;
 
-            // הוספת הודעת משתמש בעיצוב השורה הנכון
+            if (GROQ_API_KEY.includes("הכנס_כאן")) {
+                appendError("שגיאה: לא שכחת להחליף את הטקסט במפתח ה-Groq האמיתי שלך (gsk_...) בקוד בשורה 128?");
+                return;
+            }
+
             appendMessageRow(text, 'user-row');
             conversationHistory.push({ role: "user", content: text });
 
@@ -223,13 +212,15 @@
             const loadingId = appendLoading();
 
             try {
-                // קריאה מאובטחת לפונקציית השרת המתווכת של Vercel
-                const response = await fetch("/api/chat", {
+                // קריאה ישירה ל-Groq מהדפדפן (עוקף את שרתי ורסל לחלוטין)
+                const response = await fetch("https://groq.com", {
                     method: "POST",
                     headers: {
-                        "Content-Type": "application/json"
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${GROQ_API_KEY.trim()}`
                     },
                     body: JSON.stringify({
+                        model: "llama-3.3-70b-versatile",
                         messages: conversationHistory
                     })
                 });
@@ -242,12 +233,12 @@
                     appendMessageRow(botResponse, 'bot-row');
                     conversationHistory.push({ role: "assistant", content: botResponse });
                 } else {
-                    appendError(data.error || "שגיאה בתקשורת עם השרת.");
+                    appendError(data.error?.message || "שגיאה פנימית בקבלת המידע.");
                 }
 
             } catch (error) {
                 removeLoading(loadingId);
-                appendError("נכשלה ההתחברות. ודא שקובץ ה-API מוגדר בתיקיית api/chat.js.");
+                appendError("נכשלה הפנייה. ודא שהמפתח תקין ושיש חיבור אינטרנט יציב.");
                 console.error(error);
             }
         }
@@ -263,11 +254,9 @@
         function appendMessageRow(text, rowTypeClass) {
             const rowDiv = document.createElement('div');
             rowDiv.className = `message-row ${rowTypeClass}`;
-            
             const contentDiv = document.createElement('div');
             contentDiv.className = 'message-content';
             contentDiv.innerText = text;
-            
             rowDiv.appendChild(contentDiv);
             chatContainer.appendChild(rowDiv);
             chatContainer.scrollTop = chatContainer.scrollHeight;
@@ -276,7 +265,7 @@
         function appendError(errorText) {
             const errDiv = document.createElement('div');
             errDiv.className = 'error-message';
-            errDiv.innerText = `שגיאה: ${errorText}`;
+            errDiv.innerText = `הודעה מהמערכת: ${errorText}`;
             chatContainer.appendChild(errDiv);
             chatContainer.scrollTop = chatContainer.scrollHeight;
         }
